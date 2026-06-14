@@ -1,0 +1,48 @@
+schema_version: "1.0"
+metadata:
+  name: Hermes agent and dashboard conventions
+  authority: project
+  status: seed
+sources:
+  - DESIGN.md
+  - AGENTS.md
+brand:
+  name: Hermes
+  owner: Nous Research
+  colors:
+    background_base: "#041c1c"
+    midground_base: "#ffe6cb"
+    destructive: "#fb2c36"
+    success: "#4ade80"
+    warning: "#ffbd38"
+  typography:
+    sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif
+    mono: ui-monospace, SF Mono, Cascadia Mono, Menlo, Consolas, monospace
+writing:
+  voice: terminal-native, research-lab direct, contemplative but operational
+  style_rules:
+    - Treat the dashboard as the agent window, not the center of gravity.
+    - Prefer exact runtime state and tool evidence over generic assistant prose.
+    - Keep plugin and skill instructions executable and path-aware.
+visuals:
+  atmosphere: deep nocturnal teal canvas with warm cream foreground
+  anti_patterns:
+    - drop shadows
+    - gradients-as-decoration
+    - glassmorphism
+    - hardcoded theme hex inside components
+  rules:
+    - Use CSS custom properties and Tailwind aliases for colors.
+    - Use lucide-react icons only in dashboard UI.
+    - Depth is chromatic and token-driven, not shadow-based.
+surfaces:
+  ui:
+    visuals:
+      screenshot_required: true
+      token_source: DESIGN.md and web/src/themes/presets.ts
+  plugin:
+    writing:
+      voice: concise, tool-schema-first, no hidden side effects
+  skill:
+    writing:
+      voice: direct procedural workflow

@@ -1,0 +1,11 @@
+name: project_conventions
+version: 0.1.0
+description: "Resolve inherited project convention packs and audit artifacts through SDD."
+author: Richard
+kind: standalone
+platforms:
+  - linux
+  - macos
+provides_tools:
+  - conventions_resolve
+  - audit_artifact
