@@ -1,12 +1,12 @@
 ---
 sidebar_position: 11
 title: Model Catalog
-description: Remotely-hosted manifest driving curated model picker lists for OpenRouter and Nous Portal.
+description: Remotely-hosted manifest driving curated current model picker lists for OpenRouter and Nous Portal.
 ---
 
 # Model Catalog
 
-Hermes fetches curated model lists for **OpenRouter** and **Nous Portal** from a JSON manifest hosted alongside the docs site. This lets maintainers update picker lists without shipping a new `hermes-agent` release.
+Hermes fetches curated current model lists for **OpenRouter** and **Nous Portal** from a JSON manifest hosted alongside the docs site. This lets maintainers update picker lists without shipping a new `hermes-agent` release. The active inventory is refreshed from provider documentation and exact registry IDs; historical run reports and compatibility mappings are not rewritten by a catalog refresh.
 
 When the manifest is unreachable (offline, network blocked, hosting failure), Hermes silently falls back to the in-repo snapshot that ships with the CLI. The manifest never breaks the picker — worst case you see whatever list was bundled with your installed version.
 
@@ -23,21 +23,21 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-04-25T22:00:00Z",
+  "updated_at": "2026-07-24T20:14:21Z",
   "metadata": {},
   "providers": {
     "openrouter": {
       "metadata": {},
       "models": [
-        {"id": "moonshotai/kimi-k2.6", "description": "recommended", "metadata": {}},
-        {"id": "openai/gpt-5.4",       "description": ""}
+        {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
+        {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"}
       ]
     },
     "nous": {
       "metadata": {},
       "models": [
-        {"id": "anthropic/claude-opus-4.7"},
-        {"id": "moonshotai/kimi-k2.6"}
+        {"id": "google/gemini-3.6-flash"},
+        {"id": "qwen/qwen3.6-35b-a3b"}
       ]
     }
   }
@@ -50,6 +50,12 @@ Field notes:
 - **`metadata`** — free-form dict at the manifest, provider, and model level. Any keys. Hermes ignores unknown fields, so you can annotate entries (`"tier": "paid"`, `"tags": [...]`, etc.) without coordinating a schema change.
 - **`description`** — OpenRouter-only. Drives picker badge text (`"recommended"`, `"free"`, or empty). Nous Portal doesn't use this — free-tier gating is determined live from the Portal's pricing endpoint.
 - **Pricing and context length** are NOT in the manifest. Those come from live provider APIs (`/v1/models` endpoints, models.dev) at fetch time.
+
+## Current curation policy
+
+The 2026-07-24 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemma 4 open-weight checkpoints, Qwen3.6, DeepSeek V4, and verified current open-weight entries such as Llama 4, OLMo 3, Phi 4, Granite 4.1, and Devstral. OpenRouter availability is checked against its model registry; an OpenRouter slug does not by itself establish a model's license.
+
+The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. ChatGPT 6 / GPT-6 remains an unverified watchlist item until an official OpenAI model ID and availability statement exists.
 
 ## Fetch behavior
 
@@ -93,7 +99,7 @@ The overriding manifest only needs to populate the provider block(s) it cares ab
 Maintainers:
 
 ```bash
-# Re-generate from the in-repo hardcoded lists (keeps manifest in sync after
+# Re-generate from the in-repo hardcoded lists (keeps the fallback manifest in sync after
 # editing OPENROUTER_MODELS or _PROVIDER_MODELS["nous"] in hermes_cli/models.py).
 python scripts/build_model_catalog.py
 ```

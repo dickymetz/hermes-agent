@@ -31,30 +31,51 @@ COPILOT_REASONING_EFFORTS_O_SERIES = ["low", "medium", "high"]
 
 
 # Fallback OpenRouter snapshot used when the live catalog is unavailable.
+# Verified against https://openrouter.ai/api/v1/models on 2026-07-24.
 # (model_id, display description shown in menus)
 OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
-    ("anthropic/claude-opus-4.8",              ""),
-    ("anthropic/claude-opus-4.8-fast",         "2x price, higher output speed"),
-    ("anthropic/claude-sonnet-4.6",            ""),
+    ("anthropic/claude-fable-5",               "adaptive effort: low → max"),
+    ("anthropic/claude-opus-5",                "thinking + effort: low → max"),
+    ("anthropic/claude-opus-5-fast",           "2x price, higher output speed"),
+    ("anthropic/claude-sonnet-5",              "adaptive effort: low → max"),
     ("anthropic/claude-haiku-4.5",             ""),
     # OpenAI
-    ("openai/gpt-5.5",                         ""),
-    ("openai/gpt-5.5-pro",                     ""),
-    ("openai/gpt-5.4-mini",                    ""),
+    ("openai/gpt-5.6-sol",                     "reasoning: none → max"),
+    ("openai/gpt-5.6-sol-pro",                 "Pro mode; reasoning: none → max"),
+    ("openai/gpt-5.6-terra",                   "reasoning: none → max"),
+    ("openai/gpt-5.6-terra-pro",               "Pro mode; reasoning: none → max"),
+    ("openai/gpt-5.6-luna",                    "reasoning: none → max"),
+    ("openai/gpt-5.6-luna-pro",                "Pro mode; reasoning: none → max"),
     # Google
-    ("google/gemini-3-pro-preview",            ""),
+    ("google/gemini-3.6-flash",                "thinking: minimal → high"),
+    ("google/gemini-3.5-flash",                "thinking: minimal → high"),
+    ("google/gemini-3.5-flash-lite",           "thinking: minimal → high"),
     ("google/gemini-3.1-pro-preview",          ""),
-    ("google/gemini-3.5-flash",                ""),
+    ("google/gemma-4-26b-a4b-it",              "open weights; thinking toggle"),
+    ("google/gemma-4-26b-a4b-it:free",         "open weights; free"),
+    ("google/gemma-4-31b-it",                  "open weights; thinking toggle"),
+    ("google/gemma-4-31b-it:free",             "open weights; free"),
     # xAI
     ("x-ai/grok-4.3",                          ""),
     # DeepSeek
     ("deepseek/deepseek-v4-pro",               ""),
     ("deepseek/deepseek-v4-flash",             ""),
     # Qwen
-    ("qwen/qwen3.7-max",                       ""),
-    ("qwen/qwen3.7-plus",                      ""),
+    ("qwen/qwen3.6-max-preview",               ""),
+    ("qwen/qwen3.6-plus",                      ""),
+    ("qwen/qwen3.6-flash",                     ""),
+    ("qwen/qwen3.6-27b",                       "open weights"),
     ("qwen/qwen3.6-35b-a3b",                   ""),
+    ("qwen/qwen3.5-397b-a17b",                 "open weights"),
+    ("qwen/qwen3.5-35b-a3b",                   "open weights"),
+    # Other open-weight families
+    ("meta-llama/llama-4-maverick",            "open weights"),
+    ("meta-llama/llama-4-scout",               "open weights"),
+    ("allenai/olmo-3-32b-think",               "open weights"),
+    ("microsoft/phi-4",                        "open weights"),
+    ("ibm-granite/granite-4.1-8b",             "open weights"),
+    ("mistralai/devstral-2512",                "open weights"),
     # MoonshotAI
     ("moonshotai/kimi-k2.6",                   "recommended"),
     ("moonshotai/kimi-k2.7-code",              ""),
@@ -156,26 +177,41 @@ def _xai_curated_models() -> list[str]:
 _PROVIDER_MODELS: dict[str, list[str]] = {
     "nous": [
         # Anthropic
-        "anthropic/claude-opus-4.8",
-        "anthropic/claude-sonnet-4.6",
+        "anthropic/claude-fable-5",
+        "anthropic/claude-opus-5",
+        "anthropic/claude-sonnet-5",
         "anthropic/claude-haiku-4.5",
         # OpenAI
-        "openai/gpt-5.5",
-        "openai/gpt-5.5-pro",
-        "openai/gpt-5.4-mini",
+        "openai/gpt-5.6-sol",
+        "openai/gpt-5.6-terra",
+        "openai/gpt-5.6-luna",
         # Google
-        "google/gemini-3-pro-preview",
-        "google/gemini-3.1-pro-preview",
+        "google/gemini-3.6-flash",
         "google/gemini-3.5-flash",
+        "google/gemini-3.5-flash-lite",
+        "google/gemini-3.1-pro-preview",
+        "google/gemma-4-26b-a4b-it",
+        "google/gemma-4-31b-it",
         # xAI
         "x-ai/grok-4.3",
         # DeepSeek
         "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
         # Qwen
-        "qwen/qwen3.7-max",
-        "qwen/qwen3.7-plus",
+        "qwen/qwen3.6-max-preview",
+        "qwen/qwen3.6-plus",
+        "qwen/qwen3.6-flash",
+        "qwen/qwen3.6-27b",
         "qwen/qwen3.6-35b-a3b",
+        "qwen/qwen3.5-397b-a17b",
+        "qwen/qwen3.5-35b-a3b",
+        # Other open-weight families
+        "meta-llama/llama-4-maverick",
+        "meta-llama/llama-4-scout",
+        "allenai/olmo-3-32b-think",
+        "microsoft/phi-4",
+        "ibm-granite/granite-4.1-8b",
+        "mistralai/devstral-2512",
         # MoonshotAI
         "moonshotai/kimi-k2.6",
         "moonshotai/kimi-k2.7-code",
