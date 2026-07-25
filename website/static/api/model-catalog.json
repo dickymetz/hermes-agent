@@ -106,10 +106,6 @@
           "description": ""
         },
         {
-          "id": "google/gemini-3.1-flash-lite",
-          "description": "thinking controls are API-specific"
-        },
-        {
           "id": "google/gemma-4-26b-a4b-it",
           "description": "open weights; thinking toggle"
         },
