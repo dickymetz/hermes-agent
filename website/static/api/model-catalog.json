@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-07-24T20:18:21Z",
+  "updated_at": "2026-07-25T09:04:32Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog"
@@ -57,6 +57,30 @@
           "description": "Pro mode; reasoning: none \u2192 max"
         },
         {
+          "id": "openai/gpt-5.5",
+          "description": "reasoning controls"
+        },
+        {
+          "id": "openai/gpt-5.5-pro",
+          "description": "reasoning controls"
+        },
+        {
+          "id": "openai/gpt-5.4",
+          "description": "reasoning controls"
+        },
+        {
+          "id": "openai/gpt-5.4-mini",
+          "description": "reasoning controls"
+        },
+        {
+          "id": "openai/gpt-oss-120b",
+          "description": "Apache 2.0 open weights; reasoning"
+        },
+        {
+          "id": "openai/gpt-oss-20b",
+          "description": "Apache 2.0 open weights; reasoning"
+        },
+        {
           "id": "google/gemini-3.6-flash",
           "description": "thinking: minimal \u2192 high"
         },
@@ -71,6 +95,10 @@
         {
           "id": "google/gemini-3.1-pro-preview",
           "description": ""
+        },
+        {
+          "id": "google/gemini-3.1-flash-lite",
+          "description": "thinking controls are API-specific"
         },
         {
           "id": "google/gemma-4-26b-a4b-it",
