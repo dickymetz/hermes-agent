@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-07-25T09:04:32Z",
+  "updated_at": "2026-07-25T11:00:00Z",
   "metadata": {
     "source": "hermes-agent repo",
-    "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog"
+    "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
+    "verification": "Official provider docs checked 2026-07-25; registry IDs retained only where exact availability was verified"
   },
   "providers": {
     "openrouter": {
