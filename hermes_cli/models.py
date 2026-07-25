@@ -31,7 +31,7 @@ COPILOT_REASONING_EFFORTS_O_SERIES = ["low", "medium", "high"]
 
 
 # Fallback OpenRouter snapshot used when the live catalog is unavailable.
-# Verified against https://openrouter.ai/api/v1/models on 2026-07-24.
+# Verified against https://openrouter.ai/api/v1/models on 2026-07-25.
 # (model_id, display description shown in menus)
 OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
@@ -50,6 +50,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("openai/gpt-5.5",                         "reasoning controls"),
     ("openai/gpt-5.5-pro",                     "reasoning controls"),
     ("openai/gpt-5.4",                         "reasoning controls"),
+    ("openai/gpt-5.4-pro",                     "reasoning controls"),
     ("openai/gpt-5.4-mini",                    "reasoning controls"),
     ("openai/gpt-oss-120b",                    "Apache 2.0 open weights; reasoning"),
     ("openai/gpt-oss-20b",                     "Apache 2.0 open weights; reasoning"),

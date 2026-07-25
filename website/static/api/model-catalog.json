@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-07-25T11:00:00Z",
+  "updated_at": "2026-07-25T13:03:05Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
@@ -67,6 +67,10 @@
         },
         {
           "id": "openai/gpt-5.4",
+          "description": "reasoning controls"
+        },
+        {
+          "id": "openai/gpt-5.4-pro",
           "description": "reasoning controls"
         },
         {
