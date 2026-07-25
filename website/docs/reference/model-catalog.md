@@ -30,6 +30,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
       "metadata": {},
       "models": [
         {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
+        {"id": "openai/gpt-5.4-nano", "description": "reasoning controls", "metadata": {}},
         {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"}
       ]
     },

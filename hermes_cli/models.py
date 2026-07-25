@@ -52,6 +52,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("openai/gpt-5.4",                         "reasoning controls"),
     ("openai/gpt-5.4-pro",                     "reasoning controls"),
     ("openai/gpt-5.4-mini",                    "reasoning controls"),
+    ("openai/gpt-5.4-nano",                    "reasoning controls"),
     ("openai/gpt-oss-120b",                    "Apache 2.0 open weights; reasoning"),
     ("openai/gpt-oss-20b",                     "Apache 2.0 open weights; reasoning"),
     # Google
