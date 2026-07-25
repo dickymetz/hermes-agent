@@ -54,7 +54,7 @@ Field notes:
 
 ## Current curation policy
 
-The 2026-07-24 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemma 4 open-weight checkpoints, Qwen3.6, DeepSeek V4, and verified current open-weight entries such as Llama 4, OLMo 3, Phi 4, Granite 4.1, and Devstral. OpenRouter availability is checked against its model registry; an OpenRouter slug does not by itself establish a model's license.
+The 2026-07-25 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemma 4 open-weight checkpoints, Qwen3.6, DeepSeek V4, and verified current open-weight entries such as Llama 4, OLMo 3, Phi 4, Granite 4.1, and Devstral. OpenRouter availability is checked against its model registry; an OpenRouter slug does not by itself establish a model's license.
 
 The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. ChatGPT 6 / GPT-6 remains an unverified watchlist item until an official OpenAI model ID and availability statement exists.
 

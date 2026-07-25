@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-07-25T13:03:05Z",
+  "updated_at": "2026-07-25T19:03:05Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
@@ -99,6 +99,10 @@
         },
         {
           "id": "google/gemini-3.5-flash-lite",
+          "description": "thinking: minimal \u2192 high"
+        },
+        {
+          "id": "google/gemini-3.1-flash-lite",
           "description": "thinking: minimal \u2192 high"
         },
         {
