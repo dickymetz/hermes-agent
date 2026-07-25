@@ -31,6 +31,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
       "models": [
         {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
         {"id": "openai/gpt-5.4-nano", "description": "reasoning controls", "metadata": {}},
+        {"id": "openai/gpt-5.3-codex", "description": "coding-focused reasoning", "metadata": {}},
         {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"}
       ]
     },
