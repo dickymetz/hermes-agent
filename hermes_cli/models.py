@@ -60,7 +60,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("google/gemini-3.6-flash",                "thinking: minimal → high"),
     ("google/gemini-3.5-flash",                "thinking: minimal → high"),
     ("google/gemini-3.5-flash-lite",           "thinking: minimal → high"),
-    ("google/gemini-3.1-pro-preview",          ""),
+    ("google/gemini-3.1-pro",                  ""),
     ("google/gemini-3.1-flash-lite",           "thinking controls are API-specific"),
     ("google/gemma-4-26b-a4b-it",              "open weights; thinking toggle"),
     ("google/gemma-4-26b-a4b-it:free",         "open weights; free"),
@@ -199,7 +199,7 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "google/gemini-3.6-flash",
         "google/gemini-3.5-flash",
         "google/gemini-3.5-flash-lite",
-        "google/gemini-3.1-pro-preview",
+        "google/gemini-3.1-pro",
         "google/gemma-4-26b-a4b-it",
         "google/gemma-4-31b-it",
         # xAI
