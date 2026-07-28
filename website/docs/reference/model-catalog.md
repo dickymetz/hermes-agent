@@ -55,7 +55,7 @@ Field notes:
 
 ## Current curation policy
 
-The DeepSeek API has retired the legacy `deepseek-chat` and `deepseek-reasoner` names; they are intentionally absent from this remote manifest. Runtime compatibility mappings are maintained separately.
+DeepSeek's official changelog still documents `deepseek-chat` and `deepseek-reasoner` as compatibility IDs. They are intentionally absent from this curated OpenRouter manifest because this manifest lists exact OpenRouter slugs, while runtime compatibility mappings are maintained separately.
 
 The 2026-07-28 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemma 4 open-weight checkpoints, Qwen3.6, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates remain explicitly unverified in the shared catalog watchlist.
 
