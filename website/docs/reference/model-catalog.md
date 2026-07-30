@@ -57,7 +57,7 @@ Field notes:
 
 DeepSeek's official changelog scheduled `deepseek-chat` and `deepseek-reasoner` for discontinuation on 2026-07-24. They are intentionally absent from this curated OpenRouter manifest; historical/runtime compatibility mappings are maintained separately and are not current provider availability.
 
-The 2026-07-29 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemma 4 open-weight checkpoints, Qwen3.6, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates remain explicitly unverified in the shared catalog watchlist.
+The 2026-07-30 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), Gemma 4 open-weight checkpoints, Qwen3.6, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates remain explicitly unverified in the shared catalog watchlist.
 
 The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. ChatGPT 6 / GPT-6 remains an unverified watchlist item until an official OpenAI model ID and availability statement exists.
 
