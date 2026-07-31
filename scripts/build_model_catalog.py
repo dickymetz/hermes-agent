@@ -47,7 +47,7 @@ def build_catalog() -> dict:
             "source": "hermes-agent repo",
             "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
             "verification": (
-                "Official provider docs checked 2026-07-28; registry IDs retained "
+                "Official provider docs checked 2026-07-31; registry IDs retained "
                 "only where exact availability was verified; registry presence is "
                 "not proof of provider support or licensing"
             ),
