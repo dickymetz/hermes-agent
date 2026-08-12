@@ -23,21 +23,21 @@ https://hermes-agent.nousresearch.com/docs/api/model-catalog.json
 ```json
 {
   "version": 1,
-  "updated_at": "2026-07-31T13:00:00Z",
+  "updated_at": "2026-08-12T18:00:00Z",
   "metadata": {},
   "providers": {
     "openrouter": {
       "metadata": {},
       "models": [
-        {"id": "moonshotai/kimi-k2.6", "description": "recommended", "metadata": {}},
-        {"id": "openai/gpt-5.4",       "description": ""}
+        {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
+        {"id": "openai/gpt-5.4",     "description": ""}
       ]
     },
     "nous": {
       "metadata": {},
       "models": [
-        {"id": "anthropic/claude-opus-4.7"},
-        {"id": "moonshotai/kimi-k2.6"}
+        {"id": "anthropic/claude-opus-5"},
+        {"id": "google/gemini-3.6-flash"}
       ]
     }
   }

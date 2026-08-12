@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T13:00:00Z",
+  "updated_at": "2026-08-12T18:00:00Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
-    "verification": "Official provider docs checked 2026-08-11; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
+    "verification": "Official provider docs checked 2026-08-12; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
   },
   "providers": {
     "openrouter": {
@@ -160,6 +160,10 @@
         {
           "id": "mistralai/devstral-2512",
           "description": "open weights"
+        },
+        {
+          "id": "openrouter/pareto-code",
+          "description": "auto-routes to cheapest coder meeting openrouter.min_coding_score"
         }
       ]
     },
