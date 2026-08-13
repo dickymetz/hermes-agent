@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-08-12T18:00:00Z",
+  "updated_at": "2026-08-13T18:00:00Z",
   "metadata": {},
   "providers": {
     "openrouter": {
