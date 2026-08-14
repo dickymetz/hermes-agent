@@ -57,7 +57,6 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("openai/gpt-oss-120b",                    "Apache 2.0 open weights; reasoning"),
     ("openai/gpt-oss-20b",                     "Apache 2.0 open weights; reasoning"),
     # Google
-    ("google/gemini-3.7-flash",                "latest stable Flash model"),
     ("google/gemini-3.6-flash",                "thinking: minimal → high"),
     ("google/gemini-3.5-flash",                "thinking: minimal → high"),
     ("google/gemini-3.5-flash-lite",           "thinking: minimal → high"),
@@ -189,7 +188,6 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "openai/gpt-5.6-terra",
         "openai/gpt-5.6-luna",
         # Google
-        "google/gemini-3.7-flash",
         "google/gemini-3.6-flash",
         "google/gemini-3.5-flash",
         "google/gemini-3.5-flash-lite",
