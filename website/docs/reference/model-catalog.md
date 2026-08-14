@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-08-13T18:00:00Z",
+  "updated_at": "2026-08-14T13:00:03Z",
   "metadata": {},
   "providers": {
     "openrouter": {
@@ -57,7 +57,7 @@ Field notes:
 
 DeepSeek's official changelog documents `deepseek-chat` and `deepseek-reasoner` as compatibility aliases that are upgraded to successive backend releases; the V4 API exposes `deepseek-v4-pro` and `deepseek-v4-flash`. The aliases are intentionally absent from this curated OpenRouter manifest because this manifest is a curated current picker list, not a complete compatibility inventory.
 
-The 2026-08-12 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), Gemma 4 open-weight checkpoints, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including Qwen3.6 entries whose watched primary release endpoint returned no records, are excluded from this active manifest and remain explicitly unverified in the shared catalog watchlist.
+The 2026-08-14 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.7/3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), Gemma 4 open-weight checkpoints, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including Qwen3.6 entries whose watched primary release endpoint returned no records, remain explicitly unverified in the shared catalog watchlist.
 
 The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. ChatGPT 6 / GPT-6 remains an unverified watchlist item until an official OpenAI model ID and availability statement exists.
 
