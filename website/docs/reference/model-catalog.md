@@ -55,6 +55,8 @@ Field notes:
 
 ## Current curation policy
 
+Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries.
+
 DeepSeek's official changelog documents `deepseek-chat` and `deepseek-reasoner` as compatibility aliases that are upgraded to successive backend releases; the V4 API exposes `deepseek-v4-pro` and `deepseek-v4-flash`. The aliases are intentionally absent from this curated OpenRouter manifest because this manifest is a curated current picker list, not a complete compatibility inventory.
 
 The 2026-08-14 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), Gemma 4 open-weight checkpoints, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including Qwen3.6 entries whose watched primary release endpoint returned no records, remain explicitly unverified in the shared catalog watchlist.
