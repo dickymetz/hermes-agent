@@ -79,31 +79,6 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("microsoft/phi-4",                        "open weights"),
     ("ibm-granite/granite-4.1-8b",             "open weights"),
     ("mistralai/devstral-2512",                "open weights"),
-    # MoonshotAI
-    ("moonshotai/kimi-k2.6",                   "recommended"),
-    ("moonshotai/kimi-k2.7-code",              ""),
-    # MiniMax
-    ("minimax/minimax-m3",                     ""),
-    # Z-AI
-    ("z-ai/glm-5.1",                           ""),
-    # Xiaomi
-    ("xiaomi/mimo-v2.5-pro",                   ""),
-    # Tencent
-    ("tencent/hy3-preview",                    ""),
-    # StepFun
-    ("stepfun/step-3.7-flash",                 ""),
-    # NVIDIA
-    ("nvidia/nemotron-3-super-120b-a12b",      ""),
-    # OpenRouter routers
-    ("openrouter/pareto-code",                 "auto-routes to cheapest coder meeting openrouter.min_coding_score"),
-    # Free tier
-    ("openrouter/elephant-alpha",              "free"),
-    ("openrouter/owl-alpha",                   "free"),
-    ("poolside/laguna-m.1:free",               "free"),
-    ("tencent/hy3-preview:free",               "free"),
-    ("nvidia/nemotron-3-super-120b-a12b:free", "free"),
-    ("nvidia/nemotron-3-ultra-550b-a55b:free", "free"),
-    ("inclusionai/ring-2.6-1t:free",           "free"),
 ]
 
 _openrouter_catalog_cache: list[tuple[str, str]] | None = None
@@ -196,19 +171,9 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "google/gemini-3.1-pro-preview",
         "google/gemma-4-26b-a4b-it",
         "google/gemma-4-31b-it",
-        # xAI
-        "x-ai/grok-4.3",
         # DeepSeek
         "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
-        # Qwen
-        "qwen/qwen3.6-max-preview",
-        "qwen/qwen3.6-plus",
-        "qwen/qwen3.6-flash",
-        "qwen/qwen3.6-27b",
-        "qwen/qwen3.6-35b-a3b",
-        "qwen/qwen3.5-397b-a17b",
-        "qwen/qwen3.5-35b-a3b",
         # Other open-weight families
         "meta-llama/llama-4-maverick",
         "meta-llama/llama-4-scout",
@@ -216,21 +181,6 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "microsoft/phi-4",
         "ibm-granite/granite-4.1-8b",
         "mistralai/devstral-2512",
-        # MoonshotAI
-        "moonshotai/kimi-k2.6",
-        "moonshotai/kimi-k2.7-code",
-        # MiniMax
-        "minimax/minimax-m3",
-        # Z-AI
-        "z-ai/glm-5.1",
-        # Xiaomi
-        "xiaomi/mimo-v2.5-pro",
-        # Tencent
-        "tencent/hy3-preview",
-        # StepFun
-        "stepfun/step-3.7-flash",
-        # NVIDIA
-        "nvidia/nemotron-3-super-120b-a12b",
     ],
     # Native OpenAI Chat Completions (api.openai.com). Used by /model counts and
     # provider_model_ids fallback when /v1/models is unavailable.
