@@ -55,7 +55,7 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries.
+Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. This verification was refreshed on 2026-08-18; the authoritative model snapshot is unchanged.
 
 DeepSeek's official changelog documents `deepseek-v4-pro` as GA and `deepseek-v4-flash` as public beta, with `low`, `high`, and `max` thinking effort. Older `deepseek-chat` and `deepseek-reasoner` vocabulary remains outside this curated V4 manifest because the picker is limited to verified V4 IDs; it is not labeled retired without a provider retirement statement.
 
