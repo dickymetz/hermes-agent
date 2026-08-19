@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-08-18T14:10:15Z",
+  "updated_at": "2026-08-19T13:00:00Z",
   "metadata": {},
   "providers": {
     "openrouter": {
@@ -55,11 +55,11 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. This verification was refreshed on 2026-08-18; the authoritative model snapshot is unchanged.
+Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. This verification was refreshed on 2026-08-19; the authoritative model snapshot is unchanged.
 
 DeepSeek's official changelog documents `deepseek-v4-pro` as GA and `deepseek-v4-flash` as public beta, with `low`, `high`, and `max` thinking effort. Older `deepseek-chat` and `deepseek-reasoner` vocabulary remains outside this curated V4 manifest because the picker is limited to verified V4 IDs; it is not labeled retired without a provider retirement statement.
 
-The 2026-08-17 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), Gemma 4 open-weight checkpoints, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including Qwen3.6 entries whose watched primary release endpoint returned no records, remain explicitly unverified in the shared catalog watchlist.
+The 2026-08-19 current set includes Claude Fable 5, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), Gemma 4 open-weight checkpoints, and DeepSeek V4. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including Qwen3.6 entries whose watched primary release endpoint returned no records, remain explicitly unverified in the shared catalog watchlist.
 
 The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. ChatGPT 6 / GPT-6 remains an unverified watchlist item until an official OpenAI model ID and availability statement exists.
 
