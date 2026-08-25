@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-08-24T14:00:03Z",
+  "updated_at": "2026-08-25T14:00:00Z",
   "metadata": {},
   "providers": {
     "openrouter": {
@@ -39,7 +39,8 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
       "metadata": {},
       "models": [
         {"id": "google/gemini-3.6-flash"},
-        {"id": "google/gemini-3.5-flash-lite"}
+        {"id": "google/gemini-3.5-flash-lite"},
+        {"id": "google/gemini-3.1-flash-lite"}
       ]
     }
   }
@@ -55,7 +56,7 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. This verification was refreshed on 2026-08-24. The authoritative model snapshot is unchanged.
+Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. This verification was refreshed on 2026-08-25. The authoritative model snapshot is unchanged.
 
 DeepSeek's official changelog documents `deepseek-v4-pro` as GA and `deepseek-v4-flash` as public beta, with `low`, `high`, and `max` thinking effort. The legacy `deepseek-chat` and `deepseek-reasoner` compatibility names remain outside this curated V4 manifest.
 
