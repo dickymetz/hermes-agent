@@ -142,6 +142,10 @@
           "description": ""
         },
         {
+          "id": "deepseek/deepseek-v4-flash-vision-exp",
+          "description": "experimental multimodal vision model"
+        },
+        {
           "id": "meta-llama/llama-4-maverick",
           "description": "open weights"
         },
