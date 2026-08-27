@@ -31,7 +31,7 @@ COPILOT_REASONING_EFFORTS_O_SERIES = ["low", "medium", "high"]
 
 
 # Fallback OpenRouter snapshot used when the live catalog is unavailable.
-# Verified against https://openrouter.ai/api/v1/models on 2026-08-17.
+# Verified against https://openrouter.ai/api/v1/models on 2026-08-27.
 # (model_id, display description shown in menus)
 OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
@@ -71,6 +71,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     # DeepSeek
     ("deepseek/deepseek-v4-pro",               ""),
     ("deepseek/deepseek-v4-flash",             ""),
+    ("deepseek/deepseek-v4-flash-vision-exp",  "experimental multimodal vision model"),
     # Qwen
     # Other open-weight families
     ("meta-llama/llama-4-maverick",            "open weights"),
