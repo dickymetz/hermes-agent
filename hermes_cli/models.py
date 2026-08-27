@@ -37,16 +37,12 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
     ("anthropic/claude-fable-5",               "adaptive effort: low → max"),
     ("anthropic/claude-opus-5",                "thinking + effort: low → max"),
-    ("anthropic/claude-opus-5-fast",           "2x price, higher output speed"),
     ("anthropic/claude-sonnet-5",              "adaptive effort: low → max"),
     ("anthropic/claude-haiku-4.5",             ""),
     # OpenAI
     ("openai/gpt-5.6-sol",                     "reasoning: none → max"),
-    ("openai/gpt-5.6-sol-pro",                 "Pro mode; reasoning: none → max"),
     ("openai/gpt-5.6-terra",                   "reasoning: none → max"),
-    ("openai/gpt-5.6-terra-pro",               "Pro mode; reasoning: none → max"),
     ("openai/gpt-5.6-luna",                    "reasoning: none → max"),
-    ("openai/gpt-5.6-luna-pro",                "Pro mode; reasoning: none → max"),
     ("openai/gpt-5.5",                         "reasoning controls"),
     ("openai/gpt-5.5-pro",                     "reasoning controls"),
     ("openai/gpt-5.4",                         "reasoning controls"),
