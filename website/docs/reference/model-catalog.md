@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-08-25T16:00:03Z",
+  "updated_at": "2026-08-27T14:00:05Z",
   "metadata": {},
   "providers": {
     "openrouter": {
@@ -56,7 +56,7 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. DeepSeek announced the experimental `deepseek-v4-flash-vision-exp` API model on 2026-08-21, and OpenRouter currently exposes the exact slug `deepseek/deepseek-v4-flash-vision-exp`; it is included for OpenRouter only. This verification was refreshed on 2026-08-26.
+Google's current stable Flash inventory now also includes `gemini-3.7-flash`; it is included in the manifest below alongside the retained 3.6 and 3.5 compatibility entries. DeepSeek announced the experimental `deepseek-v4-flash-vision-exp` API model on 2026-08-21, and OpenRouter currently exposes the exact slug `deepseek/deepseek-v4-flash-vision-exp`; it is included for OpenRouter only. This verification was refreshed on 2026-08-27 at 10:00 Eastern time.
 
 DeepSeek's official changelog documents `deepseek-v4-pro` as GA and `deepseek-v4-flash` as public beta, with `low`, `high`, and `max` thinking effort. The legacy `deepseek-chat` and `deepseek-reasoner` compatibility names remain outside this curated V4 manifest.
 
