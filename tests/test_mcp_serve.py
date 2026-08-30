@@ -4,7 +4,7 @@ Tests for mcp_serve — Hermes MCP server.
 Three layers of tests:
 1. Unit tests — helpers, content extraction, attachment parsing
 2. EventBridge tests — queue mechanics, cursors, waiters, concurrency
-3. End-to-end tests — call actual MCP tools through FastMCP's tool manager
+3. End-to-end tests — call actual MCP tools through the MCPServer
    with real session data in SQLite and sessions.json
 """
 
@@ -228,7 +228,7 @@ class _FakeToolManager:
         return list(self._tools.values())
 
 
-class _FakeFastMCP:
+class _FakeMCPServer:
     def __init__(self, *args, **kwargs):
         self._tool_manager = _FakeToolManager()
 
@@ -239,6 +239,11 @@ class _FakeFastMCP:
 
         return decorator
 
+    async def call_tool(self, name, arguments=None, context=None):
+        """Mirror ``MCPServer.call_tool``'s signature closely enough for the
+        parameter-coercion tests, which only need the tool's raw return."""
+        return await self._tool_manager.call_tool(name, arguments)
+
 
 @pytest.fixture
 def fake_mcp_server(populated_sessions_dir, mock_session_db, monkeypatch):
@@ -248,7 +253,7 @@ def fake_mcp_server(populated_sessions_dir, mock_session_db, monkeypatch):
     monkeypatch.setattr(mcp_serve, "_get_session_db", lambda: mock_session_db)
     monkeypatch.setattr(mcp_serve, "_load_channel_directory", lambda: {})
     monkeypatch.setattr(mcp_serve, "_MCP_SERVER_AVAILABLE", True)
-    monkeypatch.setattr(mcp_serve, "FastMCP", _FakeFastMCP)
+    monkeypatch.setattr(mcp_serve, "MCPServer", _FakeMCPServer)
 
     bridge = mcp_serve.EventBridge()
     server = mcp_serve.create_mcp_server(event_bridge=bridge)
@@ -492,7 +497,7 @@ class TestEventBridge:
 
 
 # ---------------------------------------------------------------------------
-# 3. END-TO-END TESTS — call MCP tools through FastMCP server
+# 3. END-TO-END TESTS — call MCP tools through the MCPServer
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
@@ -510,11 +515,20 @@ def mcp_server_e2e(populated_sessions_dir, mock_session_db, monkeypatch):
 
 
 def _run_tool(server, name, args=None):
-    """Call an MCP tool through FastMCP's tool manager and return parsed JSON."""
+    """Call an MCP tool through the server and return parsed JSON.
+
+    mcp v2's ``MCPServer.call_tool()`` returns a ``CallToolResult`` rather than
+    the internal conversion shapes v1 leaked, so read the text off
+    ``.content``. It also takes an optional ``context``; omitting it builds a
+    request-less Context, which is fine for these tools (none use ``ctx``).
+    """
     result = asyncio.get_event_loop().run_until_complete(
-        server._tool_manager.call_tool(name, args or {})
+        server.call_tool(name, args or {})
     )
-    return json.loads(result) if isinstance(result, str) else result
+    if isinstance(result, str):
+        return json.loads(result)
+    text = "".join(getattr(b, "text", "") for b in (getattr(result, "content", None) or []))
+    return json.loads(text) if text else result
 
 
 @pytest.fixture

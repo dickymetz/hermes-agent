@@ -6,7 +6,7 @@ Covers:
    errors, missing-file errors.
 
 2. HTTP (new SDK ``streamable_http_client``) path forwards ``cert=`` into the
-   user-owned ``httpx.AsyncClient``.
+   user-owned ``httpx2.AsyncClient``.
 
 3. SSE path forwards ``cert`` and ``ssl_verify`` via an ``httpx_client_factory``
    without breaking the OAuth/headers/timeout passthrough.
@@ -152,14 +152,14 @@ class TestResolveClientCert:
 
 
 # ---------------------------------------------------------------------------
-# HTTP transport — cert forwarded into httpx.AsyncClient
+# HTTP transport — cert forwarded into httpx2.AsyncClient
 # ---------------------------------------------------------------------------
 
 
 class TestHTTPClientCert:
     def test_cert_forwarded_to_async_client(self, tmp_path):
-        """When client_cert is set, the new-SDK HTTP path passes ``cert=``
-        into ``httpx.AsyncClient``."""
+        """When client_cert is set, the HTTP path passes ``cert=``
+        into ``httpx2.AsyncClient`` (mcp v2 replaced httpx with httpx2)."""
         from tools.mcp_tool import MCPServerTask
 
         cert = tmp_path / "client.pem"
@@ -203,8 +203,7 @@ class TestHTTPClientCert:
 
         async def _drive():
             with patch("tools.mcp_tool._MCP_HTTP_AVAILABLE", True), \
-                 patch("tools.mcp_tool._MCP_NEW_HTTP", True), \
-                 patch("httpx.AsyncClient", DummyAsyncClient), \
+                 patch("httpx2.AsyncClient", DummyAsyncClient), \
                  patch("tools.mcp_tool.streamable_http_client",
                        return_value=DummyTransportCtx()), \
                  patch("tools.mcp_tool.ClientSession", DummySession), \
@@ -264,8 +263,7 @@ class TestHTTPClientCert:
 
         async def _drive():
             with patch("tools.mcp_tool._MCP_HTTP_AVAILABLE", True), \
-                 patch("tools.mcp_tool._MCP_NEW_HTTP", True), \
-                 patch("httpx.AsyncClient", DummyAsyncClient), \
+                 patch("httpx2.AsyncClient", DummyAsyncClient), \
                  patch("tools.mcp_tool.streamable_http_client",
                        return_value=DummyTransportCtx()), \
                  patch("tools.mcp_tool.ClientSession", DummySession), \
@@ -279,7 +277,7 @@ class TestHTTPClientCert:
         assert captured.get("cert") == (str(cert), str(key))
 
     def test_no_cert_means_no_cert_kwarg(self):
-        """When client_cert is unset, ``cert`` is not passed to ``httpx.AsyncClient``
+        """When client_cert is unset, ``cert`` is not passed to ``httpx2.AsyncClient``
         (matches SDK defaults)."""
         from tools.mcp_tool import MCPServerTask
 
@@ -321,8 +319,7 @@ class TestHTTPClientCert:
 
         async def _drive():
             with patch("tools.mcp_tool._MCP_HTTP_AVAILABLE", True), \
-                 patch("tools.mcp_tool._MCP_NEW_HTTP", True), \
-                 patch("httpx.AsyncClient", DummyAsyncClient), \
+                 patch("httpx2.AsyncClient", DummyAsyncClient), \
                  patch("tools.mcp_tool.streamable_http_client",
                        return_value=DummyTransportCtx()), \
                  patch("tools.mcp_tool.ClientSession", DummySession), \
@@ -339,8 +336,7 @@ class TestHTTPClientCert:
         server = MCPServerTask("remote")
 
         async def _drive():
-            with patch("tools.mcp_tool._MCP_HTTP_AVAILABLE", True), \
-                 patch("tools.mcp_tool._MCP_NEW_HTTP", True):
+            with patch("tools.mcp_tool._MCP_HTTP_AVAILABLE", True):
                 await server._run_http({
                     "url": "https://example.com/mcp",
                     "client_cert": str(tmp_path / "nope.pem"),
@@ -459,16 +455,16 @@ class TestSSEClientCert:
         assert factory is not None, "expected httpx_client_factory to be injected"
 
         # Invoke the factory the way the SDK would; capture the resulting
-        # httpx.AsyncClient kwargs.
+        # httpx2.AsyncClient kwargs.
         captured_client_kwargs: dict = {}
 
         class DummyAsyncClient:
             def __init__(self, **kwargs):
                 captured_client_kwargs.update(kwargs)
 
-        import httpx
-        with patch.object(httpx, "AsyncClient", DummyAsyncClient):
-            factory(headers={"x": "y"}, timeout=httpx.Timeout(30.0), auth=None)
+        import httpx2
+        with patch.object(httpx2, "AsyncClient", DummyAsyncClient):
+            factory(headers={"x": "y"}, timeout=httpx2.Timeout(30.0), auth=None)
 
         assert captured_client_kwargs["cert"] == str(cert)
         assert captured_client_kwargs["verify"] is True
@@ -513,8 +509,8 @@ class TestSSEClientCert:
             def __init__(self, **kwargs):
                 captured_client_kwargs.update(kwargs)
 
-        import httpx
-        with patch.object(httpx, "AsyncClient", DummyAsyncClient):
+        import httpx2
+        with patch.object(httpx2, "AsyncClient", DummyAsyncClient):
             factory(headers=None, timeout=None, auth=None)
 
         assert captured_client_kwargs["verify"] == str(ca_bundle)

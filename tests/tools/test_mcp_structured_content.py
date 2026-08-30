@@ -21,14 +21,16 @@ class _FakeContentBlock:
 class _FakeCallToolResult:
     """Minimal CallToolResult stand-in.
 
-    Uses camelCase ``structuredContent`` / ``isError`` to match the real
-    MCP SDK Pydantic model (``mcp.types.CallToolResult``).
+    Uses snake_case ``structured_content`` / ``is_error`` to match the real
+    MCP SDK Pydantic model (``mcp.types.CallToolResult``), whose fields were
+    renamed from camelCase in mcp v2. The JSON wire format is unchanged; only
+    Python attribute access moved.
     """
 
-    def __init__(self, content, is_error=False, structuredContent=None):
+    def __init__(self, content, is_error=False, structured_content=None):
         self.content = content
-        self.isError = is_error
-        self.structuredContent = structuredContent
+        self.is_error = is_error
+        self.structured_content = structured_content
 
 
 def _fake_run_on_mcp_loop(coro_or_factory, timeout=30):
@@ -85,7 +87,7 @@ class TestStructuredContentPreservation:
         session.call_tool = AsyncMock(
             return_value=_FakeCallToolResult(
                 content=[_FakeContentBlock("OK")],
-                structuredContent=payload,
+                structured_content=payload,
             )
         )
         handler = mcp_tool._make_tool_handler("test-server", "my-tool", 30.0)
@@ -104,7 +106,7 @@ class TestStructuredContentPreservation:
         session.call_tool = AsyncMock(
             return_value=_FakeCallToolResult(
                 content=[_FakeContentBlock(file_text)],
-                structuredContent=metadata,
+                structured_content=metadata,
             )
         )
         handler = mcp_tool._make_tool_handler("test-server", "my-tool", 30.0)
@@ -119,7 +121,7 @@ class TestStructuredContentPreservation:
         session.call_tool = AsyncMock(
             return_value=_FakeCallToolResult(
                 content=[_FakeContentBlock("done")],
-                structuredContent=None,
+                structured_content=None,
             )
         )
         handler = mcp_tool._make_tool_handler("test-server", "my-tool", 30.0)
@@ -134,7 +136,7 @@ class TestStructuredContentPreservation:
         session.call_tool = AsyncMock(
             return_value=_FakeCallToolResult(
                 content=[],
-                structuredContent=payload,
+                structured_content=payload,
             )
         )
         handler = mcp_tool._make_tool_handler("test-server", "my-tool", 30.0)

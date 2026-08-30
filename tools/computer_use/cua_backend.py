@@ -365,14 +365,17 @@ def _extract_tool_result(mcp_result: Any) -> Dict[str, Any]:
         "structuredContent": <dict|None>,
         "isError": bool,
       }
-    structuredContent is populated from the MCP result's structuredContent field
-    (MCP spec §2024-11-05+) and takes precedence for structured data like
-    list_windows window arrays.
+    structuredContent is populated from the MCP result's structured content
+    field (MCP spec §2024-11-05+) and takes precedence for structured data like
+    list_windows window arrays. The attribute names below are snake_case
+    because mcp v2 renamed every model field from camelCase; the dict keys we
+    emit stay camelCase, since they mirror the MCP wire format and the rest of
+    this module reads them.
     """
     data: Any = None
     images: List[str] = []
-    is_error = bool(getattr(mcp_result, "isError", False))
-    structured: Optional[Dict] = getattr(mcp_result, "structuredContent", None) or None
+    is_error = bool(getattr(mcp_result, "is_error", False))
+    structured: Optional[Dict] = getattr(mcp_result, "structured_content", None) or None
     text_chunks: List[str] = []
     for part in getattr(mcp_result, "content", []) or []:
         ptype = getattr(part, "type", None)

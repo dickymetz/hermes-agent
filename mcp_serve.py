@@ -48,11 +48,12 @@ logger = logging.getLogger("hermes.mcp_serve")
 
 _MCP_SERVER_AVAILABLE = False
 try:
-    from mcp.server.fastmcp import FastMCP
+    # mcp v2 renamed FastMCP to MCPServer and moved it to mcp.server.mcpserver.
+    from mcp.server.mcpserver import MCPServer
 
     _MCP_SERVER_AVAILABLE = True
 except ImportError:
-    FastMCP = None  # type: ignore[assignment,misc]
+    MCPServer = None  # type: ignore[assignment,misc]
 
 
 # ---------------------------------------------------------------------------
@@ -447,7 +448,17 @@ class EventBridge:
 # MCP Server
 # ---------------------------------------------------------------------------
 
-def create_mcp_server(event_bridge: Optional[EventBridge] = None) -> "FastMCP":
+def _hermes_version() -> str:
+    """Hermes' own version string, for ``serverInfo.version``."""
+    try:
+        from hermes_cli import __version__
+        return str(__version__)
+    except Exception:
+        return ""
+
+
+
+def create_mcp_server(event_bridge: Optional[EventBridge] = None) -> "MCPServer":
     """Create and return the Hermes MCP server with all tools registered."""
     if not _MCP_SERVER_AVAILABLE:
         raise ImportError(
@@ -455,8 +466,12 @@ def create_mcp_server(event_bridge: Optional[EventBridge] = None) -> "FastMCP":
             f"Install with: {sys.executable} -m pip install 'mcp'"
         )
 
-    mcp = FastMCP(
+    # mcp v2 no longer falls back to reporting the SDK's own version as the
+    # server's, so pass Hermes' version explicitly rather than advertising an
+    # empty ``serverInfo.version``.
+    mcp = MCPServer(
         "hermes",
+        version=_hermes_version(),
         instructions=(
             "Hermes Agent messaging bridge. Use these tools to interact with "
             "conversations across Telegram, Discord, Slack, WhatsApp, Signal, "

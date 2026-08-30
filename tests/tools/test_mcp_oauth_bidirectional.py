@@ -6,8 +6,8 @@ PR #11383 introduced a subclass method that wrapped the SDK's ``auth_flow`` with
     async for item in super().async_auth_flow(request):
         yield item
 
-``httpx``'s auth_flow contract is a **bidirectional** async generator — the
-driving code (``httpx._client._send_handling_auth``) does::
+``httpx2``'s auth_flow contract is a **bidirectional** async generator — the
+driving code (``httpx2._client._send_handling_auth``) does::
 
     next_request = await auth_flow.asend(response)
 
@@ -31,7 +31,7 @@ from __future__ import annotations
 import pytest
 
 
-pytest.importorskip("mcp.client.auth.oauth2", reason="MCP SDK 1.26.0+ required")
+pytest.importorskip("mcp.client.auth.oauth2", reason="MCP SDK 2.x required")
 
 
 @pytest.mark.asyncio
@@ -43,7 +43,7 @@ async def test_hermes_provider_forwards_asend_values(tmp_path, monkeypatch):
     ``oauth2.py:505``. With the correct bridge, a 200 response finishes the
     flow cleanly (``StopAsyncIteration``).
     """
-    import httpx
+    import httpx2
     from mcp.shared.auth import OAuthClientMetadata, OAuthToken
     from pydantic import AnyUrl
 
@@ -93,7 +93,7 @@ async def test_hermes_provider_forwards_asend_values(tmp_path, monkeypatch):
         callback_handler=_noop_callback,
     )
 
-    req = httpx.Request("POST", "https://example.com/mcp")
+    req = httpx2.Request("POST", "https://example.com/mcp")
     flow = provider.async_auth_flow(req)
 
     # First anext() drives the wrapper + inner generator until the inner
@@ -103,7 +103,7 @@ async def test_hermes_provider_forwards_asend_values(tmp_path, monkeypatch):
     assert outbound.url.host == "example.com"
 
     # Simulate httpx returning a 200 response.
-    fake_response = httpx.Response(200, request=outbound)
+    fake_response = httpx2.Response(200, request=outbound)
 
     # The broken wrapper would crash here with AttributeError: 'NoneType'
     # object has no attribute 'status_code', because the SDK's inner generator
@@ -125,7 +125,7 @@ async def test_hermes_provider_forwards_401_triggers_refresh(tmp_path, monkeypat
     bridge, the 401 is routed into the SDK's ``response.status_code == 401``
     branch which begins discovery (yielding a metadata-discovery request).
     """
-    import httpx
+    import httpx2
     from mcp.shared.auth import OAuthClientInformationFull, OAuthClientMetadata, OAuthToken
     from pydantic import AnyUrl
 
@@ -169,7 +169,7 @@ async def test_hermes_provider_forwards_401_triggers_refresh(tmp_path, monkeypat
         callback_handler=_noop_callback,
     )
 
-    req = httpx.Request("POST", "https://example.com/mcp")
+    req = httpx2.Request("POST", "https://example.com/mcp")
     flow = provider.async_auth_flow(req)
 
     # Drive to the first yield (outbound MCP request).
@@ -178,7 +178,7 @@ async def test_hermes_provider_forwards_401_triggers_refresh(tmp_path, monkeypat
     # Reply with a 401 including a minimal WWW-Authenticate so the SDK's
     # 401 branch can parse resource metadata from it. We just need something
     # the SDK accepts before it tries to yield the metadata-discovery request.
-    fake_401 = httpx.Response(
+    fake_401 = httpx2.Response(
         401,
         request=outbound,
         headers={"www-authenticate": 'Bearer resource_metadata="https://example.com/.well-known/oauth-protected-resource"'},
@@ -189,7 +189,7 @@ async def test_hermes_provider_forwards_401_triggers_refresh(tmp_path, monkeypat
     # back — any request. The broken bridge would have crashed with
     # AttributeError before we ever reach this point.
     next_request = await flow.asend(fake_401)
-    assert isinstance(next_request, httpx.Request), (
+    assert isinstance(next_request, httpx2.Request), (
         "wrapper must forward .asend() so the SDK's 401 branch can yield the "
         "next request in the discovery flow"
     )

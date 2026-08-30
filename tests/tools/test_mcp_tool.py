@@ -22,7 +22,8 @@ def _make_mcp_tool(name="read_file", description="Read a file", input_schema=Non
     tool = SimpleNamespace()
     tool.name = name
     tool.description = description
-    tool.inputSchema = input_schema or {
+    # mcp v2 renamed every model field from camelCase to snake_case.
+    tool.input_schema = input_schema or {
         "type": "object",
         "properties": {
             "path": {"type": "string", "description": "File path"},
@@ -35,7 +36,7 @@ def _make_mcp_tool(name="read_file", description="Read a file", input_schema=Non
 def _make_call_result(text="file contents here", is_error=False):
     """Create a fake MCP CallToolResult."""
     block = SimpleNamespace(text=text)
-    return SimpleNamespace(content=[block], isError=is_error)
+    return SimpleNamespace(content=[block], is_error=is_error)
 
 
 def _make_mock_server(name, session=None, tools=None):
@@ -151,7 +152,7 @@ class TestSchemaConversion:
         from tools.mcp_tool import _convert_mcp_schema
 
         mcp_tool = _make_mcp_tool(name="ping", description="Ping", input_schema=None)
-        mcp_tool.inputSchema = None
+        mcp_tool.input_schema = None
         schema = _convert_mcp_schema("test", mcp_tool)
 
         assert schema["parameters"]["type"] == "object"
@@ -367,8 +368,8 @@ class TestSchemaConversion:
             "nullable": True,
         }
 
-    def test_convert_mcp_schema_survives_missing_inputschema_attribute(self):
-        """A Tool object without .inputSchema must not crash registration."""
+    def test_convert_mcp_schema_survives_missing_input_schema_attribute(self):
+        """A Tool object without .input_schema must not crash registration."""
         import types
 
         from tools.mcp_tool import _convert_mcp_schema
@@ -379,15 +380,15 @@ class TestSchemaConversion:
         assert schema["name"] == "mcp_srv_probe"
         assert schema["parameters"] == {"type": "object", "properties": {}}
 
-    def test_convert_mcp_schema_with_none_inputschema(self):
-        """Tool with inputSchema=None produces a valid empty object schema."""
+    def test_convert_mcp_schema_with_none_input_schema(self):
+        """Tool with input_schema=None produces a valid empty object schema."""
         import types
 
         from tools.mcp_tool import _convert_mcp_schema
 
         # Note: _make_mcp_tool(input_schema=None) falls back to a default —
-        # build the namespace directly so .inputSchema really is None.
-        mcp_tool = types.SimpleNamespace(name="probe", description="Probe", inputSchema=None)
+        # build the namespace directly so .input_schema really is None.
+        mcp_tool = types.SimpleNamespace(name="probe", description="Probe", input_schema=None)
         schema = _convert_mcp_schema("srv", mcp_tool)
 
         assert schema["parameters"] == {"type": "object", "properties": {}}
@@ -1560,7 +1561,12 @@ class TestHTTPConfig:
         asyncio.run(_test())
 
     def test_http_seeds_initial_protocol_header(self):
-        from tools.mcp_tool import LATEST_PROTOCOL_VERSION, MCPServerTask
+        # mcp v2's LATEST_PROTOCOL_VERSION is the newest revision the SDK
+        # speaks in any era ("2026-07-28"), which the initialize handshake
+        # cannot negotiate. Hermes drives a lowlevel ClientSession, which
+        # always performs that handshake, so the seeded header carries the
+        # latest HANDSHAKE version instead.
+        from tools.mcp_tool import HANDSHAKE_PROTOCOL_VERSION, MCPServerTask
 
         server = MCPServerTask("remote")
         captured = {}
@@ -1595,55 +1601,36 @@ class TestHTTPConfig:
             async def initialize(self):
                 return None
 
-        class DummyLegacyTransportCtx:
-            def __init__(self, **kwargs):
-                captured["legacy_headers"] = kwargs.get("headers")
-
-            async def __aenter__(self):
-                return MagicMock(), MagicMock(), (lambda: None)
-
-            async def __aexit__(self, exc_type, exc, tb):
-                return False
-
         async def _discover_tools(self):
             self._shutdown_event.set()
 
-        async def _run(config, *, new_http):
+        async def _run(config):
             captured.clear()
+            # mcp v2 removed the deprecated ``streamablehttp_client`` alias,
+            # so there is a single HTTP transport path, and the client it
+            # takes is an httpx2 one.
             with patch("tools.mcp_tool._MCP_HTTP_AVAILABLE", True), \
-                 patch("tools.mcp_tool._MCP_NEW_HTTP", new_http), \
-                 patch("httpx.AsyncClient", DummyAsyncClient), \
+                 patch("httpx2.AsyncClient", DummyAsyncClient), \
                  patch("tools.mcp_tool.streamable_http_client", return_value=DummyTransportCtx()), \
-                 patch("tools.mcp_tool.streamablehttp_client", side_effect=lambda url, **kwargs: DummyLegacyTransportCtx(**kwargs)), \
                  patch("tools.mcp_tool.ClientSession", DummySession), \
                  patch.object(MCPServerTask, "_discover_tools", _discover_tools):
                 await server._run_http(config)
 
-        asyncio.run(_run({"url": "https://example.com/mcp"}, new_http=True))
-        assert captured["headers"]["mcp-protocol-version"] == LATEST_PROTOCOL_VERSION
+        asyncio.run(_run({"url": "https://example.com/mcp"}))
+        assert captured["headers"]["mcp-protocol-version"] == HANDSHAKE_PROTOCOL_VERSION
 
         asyncio.run(_run({
             "url": "https://example.com/mcp",
             "headers": {"mcp-protocol-version": "custom-version"},
-        }, new_http=True))
+        }))
         assert captured["headers"]["mcp-protocol-version"] == "custom-version"
 
         asyncio.run(_run({
             "url": "https://example.com/mcp",
             "headers": {"MCP-Protocol-Version": "custom-version"},
-        }, new_http=True))
+        }))
         assert captured["headers"]["MCP-Protocol-Version"] == "custom-version"
         assert "mcp-protocol-version" not in captured["headers"]
-
-        asyncio.run(_run({"url": "https://example.com/mcp"}, new_http=False))
-        assert captured["legacy_headers"]["mcp-protocol-version"] == LATEST_PROTOCOL_VERSION
-
-        asyncio.run(_run({
-            "url": "https://example.com/mcp",
-            "headers": {"MCP-Protocol-Version": "custom-version"},
-        }, new_http=False))
-        assert captured["legacy_headers"]["MCP-Protocol-Version"] == "custom-version"
-        assert "mcp-protocol-version" not in captured["legacy_headers"]
 
 
 # ---------------------------------------------------------------------------
@@ -2048,7 +2035,7 @@ class TestUtilityHandlers:
 
         mock_resource = SimpleNamespace(
             uri="file:///tmp/test.txt", name="test.txt",
-            description="A test file", mimeType="text/plain",
+            description="A test file", mime_type="text/plain",
         )
         mock_session = MagicMock()
         mock_session.list_resources = AsyncMock(
@@ -2645,7 +2632,7 @@ class TestConvertMessages:
 
     def test_image_message(self):
         text_block = SimpleNamespace(text="Look at this")
-        img_block = SimpleNamespace(data="abc123", mimeType="image/png")
+        img_block = SimpleNamespace(data="abc123", mime_type="image/png")
         msg = SimpleNamespace(
             role="user",
             content=[text_block, img_block],
@@ -2746,7 +2733,7 @@ class TestSamplingCallbackText:
         assert result.content.text == "Hello from LLM"
         assert result.model == "test-model"
         assert result.role == "assistant"
-        assert result.stopReason == "endTurn"
+        assert result.stop_reason == "endTurn"
 
     def test_system_prompt_prepended(self):
         """System prompt is inserted as the first message."""
@@ -2771,7 +2758,7 @@ class TestSamplingCallbackText:
         server_tool = SimpleNamespace(
             name="ask",
             description="Ask Crawl4AI",
-            inputSchema={"type": "object"},
+            input_schema={"type": "object"},
         )
 
         with patch(
@@ -2792,7 +2779,7 @@ class TestSamplingCallbackText:
         }]
 
     def test_length_stop_reason(self):
-        """finish_reason='length' maps to stopReason='maxTokens'."""
+        """finish_reason='length' maps to stop_reason='maxTokens'."""
         fake_client = MagicMock()
         fake_client.chat.completions.create.return_value = _make_llm_response(
             finish_reason="length"
@@ -2806,7 +2793,7 @@ class TestSamplingCallbackText:
             result = asyncio.run(self.handler(None, params))
 
         assert isinstance(result, CreateMessageResult)
-        assert result.stopReason == "maxTokens"
+        assert result.stop_reason == "maxTokens"
 
 
 # ---------------------------------------------------------------------------
@@ -2830,7 +2817,7 @@ class TestSamplingCallbackToolUse:
             result = asyncio.run(self.handler(None, params))
 
         assert isinstance(result, CreateMessageResultWithTools)
-        assert result.stopReason == "toolUse"
+        assert result.stop_reason == "toolUse"
         assert result.model == "test-model"
         assert len(result.content) == 1
         tc = result.content[0]

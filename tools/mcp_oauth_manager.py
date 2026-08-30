@@ -56,7 +56,7 @@ class _ProviderEntry:
         server_url: The MCP server URL used to build the provider. Tracked
             so we can discard a cached provider if the URL changes.
         oauth_config: Optional dict from ``mcp_servers.<name>.oauth``.
-        provider: The ``httpx.Auth``-compatible provider wrapping the MCP
+        provider: The ``httpx2.Auth``-compatible provider wrapping the MCP
             SDK. None until first use.
         last_mtime_ns: Last-seen ``st_mtime_ns`` of the on-disk tokens file.
             Zero if never read. Used by :meth:`MCPOAuthManager.invalidate_if_disk_changed`
@@ -198,7 +198,10 @@ def _make_hermes_provider_class() -> Optional[type]:
             builders and response handlers so we track whatever the SDK
             version we're pinned to expects.
             """
-            import httpx  # local import: httpx is an MCP SDK dependency
+            # mcp v2 builds these requests as ``httpx2.Request`` objects, so
+            # they must be sent through an ``httpx2.AsyncClient`` — the two
+            # libraries' request/response types are not interchangeable.
+            import httpx2  # local import: httpx2 is an MCP SDK dependency
             from mcp.client.auth.utils import (
                 build_oauth_authorization_server_metadata_discovery_urls,
                 build_protected_resource_metadata_discovery_urls,
@@ -208,7 +211,7 @@ def _make_hermes_provider_class() -> Optional[type]:
             )
 
             server_url = self.context.server_url
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            async with httpx2.AsyncClient(timeout=10.0) as client:
                 # Step 1: PRM discovery to learn the authorization_server URL.
                 for url in build_protected_resource_metadata_discovery_urls(
                     None, server_url
@@ -216,7 +219,7 @@ def _make_hermes_provider_class() -> Optional[type]:
                     req = create_oauth_metadata_request(url)
                     try:
                         resp = await client.send(req)
-                    except httpx.HTTPError as exc:
+                    except httpx2.HTTPError as exc:
                         logger.debug(
                             "MCP OAuth '%s': PRM discovery to %s failed: %s",
                             self._hermes_server_name, url, exc,
@@ -239,7 +242,7 @@ def _make_hermes_provider_class() -> Optional[type]:
                     req = create_oauth_metadata_request(url)
                     try:
                         resp = await client.send(req)
-                    except httpx.HTTPError as exc:
+                    except httpx2.HTTPError as exc:
                         logger.debug(
                             "MCP OAuth '%s': ASM discovery to %s failed: %s",
                             self._hermes_server_name, url, exc,
@@ -298,8 +301,8 @@ def _make_hermes_provider_class() -> Optional[type]:
                     self._hermes_server_name, exc,
                 )
 
-            # Manually bridge the bidirectional generator protocol. httpx's
-            # auth_flow driver (httpx._client._send_handling_auth) calls
+            # Manually bridge the bidirectional generator protocol. httpx2's
+            # auth_flow driver (httpx2._client._send_handling_auth) calls
             # ``auth_flow.asend(response)`` to feed HTTP responses back into
             # the generator. A naive wrapper using ``async for item in inner:
             # yield item`` DISCARDS those .asend(response) values and resumes
@@ -415,6 +418,7 @@ class MCPOAuthManager:
             _maybe_preregister_client,
             _redirect_handler,
             _wait_for_callback,
+            set_callback_timeout,
         )
 
         if not _OAUTH_AVAILABLE:
@@ -434,6 +438,10 @@ class MCPOAuthManager:
         _configure_callback_port(cfg)
         client_metadata = _build_client_metadata(cfg)
         _maybe_preregister_client(storage, cfg, client_metadata)
+        # mcp v2 removed OAuthClientProvider's ``timeout`` argument (stored but
+        # never read). The authorization wait is bounded inside
+        # ``tools.mcp_oauth._wait_for_callback`` instead.
+        set_callback_timeout(cfg.get("timeout"))
 
         return _HERMES_PROVIDER_CLS(
             server_name=server_name,
@@ -442,7 +450,6 @@ class MCPOAuthManager:
             storage=storage,
             redirect_handler=_redirect_handler,
             callback_handler=_wait_for_callback,
-            timeout=float(cfg.get("timeout", 300)),
         )
 
     def remove(self, server_name: str) -> None:
@@ -546,7 +553,7 @@ class MCPOAuthManager:
                             return
 
                         # Step 2: No disk change — if the SDK can refresh
-                        # in-place, let the caller retry. The SDK's httpx.Auth
+                        # in-place, let the caller retry. The SDK's httpx2.Auth
                         # flow will issue the refresh on the next request.
                         provider = entry.provider
                         ctx = getattr(provider, "context", None)

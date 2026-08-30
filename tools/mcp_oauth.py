@@ -6,7 +6,7 @@ Implements the browser-based OAuth 2.1 authorization code flow with PKCE
 for MCP servers that require OAuth authentication instead of static bearer
 tokens.
 
-Uses the MCP Python SDK's ``OAuthClientProvider`` (an ``httpx.Auth`` subclass)
+Uses the MCP Python SDK's ``OAuthClientProvider`` (an ``httpx2.Auth`` subclass)
 which handles discovery, dynamic client registration, PKCE, token exchange,
 refresh, and step-up authorization automatically.
 
@@ -16,7 +16,7 @@ This module provides the glue:
     - Callback server: ephemeral localhost HTTP server to capture the OAuth
       redirect with the authorization code.
     - ``build_oauth_auth()``: entry point called by ``mcp_tool.py`` that wires
-      everything together and returns the ``httpx.Auth`` object.
+      everything together and returns the ``httpx2.Auth`` object.
 
 Configuration in config.yaml::
 
@@ -92,6 +92,28 @@ class OAuthNonInteractiveError(RuntimeError):
 # Port used by the most recent build_oauth_auth() call.  Exposed so that
 # tests can verify the callback server and the redirect_uri share a port.
 _oauth_port: int | None = None
+
+# How long _wait_for_callback waits for the user to complete the browser
+# authorization, in seconds. Set by build_oauth_auth() from the server's
+# ``oauth.timeout`` config. mcp v2 dropped OAuthClientProvider's ``timeout``
+# argument (it was stored but never read, so it bounded nothing), so the bound
+# now lives where the waiting actually happens.
+_DEFAULT_CALLBACK_TIMEOUT = 300.0
+_oauth_callback_timeout: float = _DEFAULT_CALLBACK_TIMEOUT
+
+
+def set_callback_timeout(value: Any) -> float:
+    """Set the authorization-callback wait bound, in seconds.
+
+    Accepts the raw ``oauth.timeout`` config value; anything unparseable falls
+    back to :data:`_DEFAULT_CALLBACK_TIMEOUT`. Returns the value that was set.
+    """
+    global _oauth_callback_timeout
+    try:
+        _oauth_callback_timeout = float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        _oauth_callback_timeout = _DEFAULT_CALLBACK_TIMEOUT
+    return _oauth_callback_timeout
 
 
 # Skip tokens accepted at the paste prompt — exit OAuth without auth.
@@ -357,21 +379,31 @@ def _make_callback_handler() -> tuple[type, dict]:
     """Create a per-flow callback HTTP handler class with its own result dict.
 
     Returns ``(HandlerClass, result_dict)`` where *result_dict* is a mutable
-    dict that the handler writes ``auth_code`` and ``state`` into when the
-    OAuth redirect arrives.  Each call returns a fresh pair so concurrent
-    flows don't stomp on each other.
+    dict that the handler writes ``auth_code``, ``state``, and ``iss`` into
+    when the OAuth redirect arrives.  Each call returns a fresh pair so
+    concurrent flows don't stomp on each other.
+
+    ``iss`` is the RFC 9207 authorization-response issuer. mcp v2 validates it
+    against the authorization server's issuer when the redirect carries it (and
+    requires it when the server advertises
+    ``authorization_response_iss_parameter_supported``), so it must be
+    forwarded rather than dropped.
     """
-    result: dict[str, Any] = {"auth_code": None, "state": None, "error": None}
+    result: dict[str, Any] = {
+        "auth_code": None, "state": None, "iss": None, "error": None,
+    }
 
     class _Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:  # noqa: N802
             params = parse_qs(urlparse(self.path).query)
             code = params.get("code", [None])[0]
             state = params.get("state", [None])[0]
+            iss = params.get("iss", [None])[0]
             error = params.get("error", [None])[0]
 
             result["auth_code"] = code
             result["state"] = state
+            result["iss"] = iss
             result["error"] = error
 
             body = (
@@ -448,7 +480,7 @@ async def _redirect_handler(authorization_url: str) -> None:
         print("  (Headless environment detected — open the URL manually.)\n", file=sys.stderr)
 
 
-async def _wait_for_callback() -> tuple[str, str | None]:
+async def _wait_for_callback() -> "AuthorizationCodeResult":
     """Wait for the OAuth callback to arrive on the local callback server.
 
     Uses the module-level ``_oauth_port`` which is set by ``build_oauth_auth``
@@ -510,7 +542,7 @@ async def _wait_for_callback() -> tuple[str, str | None]:
         )
         paste_thread.start()
 
-    timeout = 300.0
+    timeout = _oauth_callback_timeout
     poll_interval = 0.5
     elapsed = 0.0
     try:
@@ -532,7 +564,16 @@ async def _wait_for_callback() -> tuple[str, str | None]:
             "Ensure you completed the browser authorization flow."
         )
 
-    return result["auth_code"], result["state"]
+    # mcp v2's ``callback_handler`` contract returns an
+    # ``AuthorizationCodeResult`` rather than a ``(code, state)`` tuple, so the
+    # RFC 9207 ``iss`` can be validated (SEP-2468).
+    from mcp.client.auth import AuthorizationCodeResult
+
+    return AuthorizationCodeResult(
+        code=result["auth_code"],
+        state=result["state"],
+        iss=result["iss"],
+    )
 
 
 def _paste_callback_reader(result: dict) -> None:
@@ -599,6 +640,7 @@ def _paste_callback_reader(result: dict) -> None:
 
     code = params.get("code", [None])[0]
     state = params.get("state", [None])[0]
+    iss = params.get("iss", [None])[0]
     error = params.get("error", [None])[0]
 
     if not code and not error:
@@ -614,6 +656,7 @@ def _paste_callback_reader(result: dict) -> None:
 
     result["auth_code"] = code
     result["state"] = state
+    result["iss"] = iss
     result["error"] = error
     if code:
         print("  Got authorization code from paste — completing flow.", file=sys.stderr)
@@ -727,7 +770,7 @@ def build_oauth_auth(
     server_url: str,
     oauth_config: dict | None = None,
 ) -> "OAuthClientProvider | None":
-    """Build an ``httpx.Auth``-compatible OAuth handler for an MCP server.
+    """Build an ``httpx2.Auth``-compatible OAuth handler for an MCP server.
 
     Public API preserved for backwards compatibility. New code should use
     :func:`tools.mcp_oauth_manager.get_manager` so OAuth state is shared
@@ -766,11 +809,14 @@ def build_oauth_auth(
     client_metadata = _build_client_metadata(cfg)
     _maybe_preregister_client(storage, cfg, client_metadata)
 
+    # mcp v2 removed OAuthClientProvider's ``timeout`` argument; the
+    # authorization wait is bounded in _wait_for_callback instead.
+    set_callback_timeout(cfg.get("timeout"))
+
     return OAuthClientProvider(
         server_url=server_url,
         client_metadata=client_metadata,
         storage=storage,
         redirect_handler=_redirect_handler,
         callback_handler=_wait_for_callback,
-        timeout=float(cfg.get("timeout", 300)),
     )

@@ -159,9 +159,9 @@ def test_call_tool_handler_reconnects_on_session_expired(monkeypatch, tmp_path):
             raise RuntimeError("Invalid params: Invalid or expired session")
         # Second call: mimic the MCP SDK's structured success response.
         result = MagicMock()
-        result.isError = False
+        result.is_error = False
         result.content = [MagicMock(type="text", text="tool completed")]
-        result.structuredContent = None
+        result.structured_content = None
         return result
 
     server.session.call_tool = _call_sequence

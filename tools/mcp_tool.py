@@ -79,6 +79,7 @@ Thread safety:
 
 import asyncio
 import concurrent.futures
+import importlib
 import inspect
 import json
 import logging
@@ -177,30 +178,33 @@ _MCP_HTTP_AVAILABLE = False
 _MCP_SAMPLING_TYPES = False
 _MCP_NOTIFICATION_TYPES = False
 _MCP_MESSAGE_HANDLER_SUPPORTED = False
-# Conservative fallback for SDK builds that don't export LATEST_PROTOCOL_VERSION.
-# Streamable HTTP was introduced by 2025-03-26, so this remains valid for the
-# HTTP transport path even on older-but-supported SDK versions.
-LATEST_PROTOCOL_VERSION = "2025-03-26"
+# Version advertised in the seeded ``mcp-protocol-version`` request header
+# (see ``_run_http``). This must be a version the ``initialize`` handshake can
+# actually negotiate, because Hermes drives a lowlevel ``ClientSession`` and
+# always performs that handshake -- never the 2026-era ``server/discover``
+# probe. mcp v2's ``LATEST_PROTOCOL_VERSION`` is the newest revision the SDK
+# speaks in ANY era ("2026-07-28"), which initialize cannot negotiate, so we
+# read ``LATEST_HANDSHAKE_VERSION`` instead. The literal below is only a
+# fallback for SDK builds that don't export it.
+HANDSHAKE_PROTOCOL_VERSION = "2025-11-25"
 try:
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     _MCP_AVAILABLE = True
+    # ``streamablehttp_client`` (the deprecated alias) was removed in mcp v2;
+    # ``streamable_http_client`` has existed since mcp 1.24.0.
     try:
-        from mcp.client.streamable_http import streamablehttp_client
+        from mcp.client.streamable_http import streamable_http_client
         _MCP_HTTP_AVAILABLE = True
     except ImportError:
         _MCP_HTTP_AVAILABLE = False
-    # Prefer the non-deprecated API (mcp >= 1.24.0); fall back to the
-    # deprecated wrapper for older SDK versions.
     try:
-        from mcp.client.streamable_http import streamable_http_client
-        _MCP_NEW_HTTP = True
+        from mcp.types.version import LATEST_HANDSHAKE_VERSION as HANDSHAKE_PROTOCOL_VERSION
     except ImportError:
-        _MCP_NEW_HTTP = False
-    try:
-        from mcp.types import LATEST_PROTOCOL_VERSION
-    except ImportError:
-        logger.debug("mcp.types.LATEST_PROTOCOL_VERSION not available -- using fallback protocol version")
+        logger.debug(
+            "mcp.types.version.LATEST_HANDSHAKE_VERSION not available -- "
+            "using fallback handshake protocol version"
+        )
     # SSE transport client (for MCP servers using SSE transport instead of Streamable HTTP)
     try:
         from mcp.client.sse import sse_client
@@ -510,7 +514,7 @@ def _cache_mcp_image_block(block) -> str:
     import base64
 
     data = getattr(block, "data", None)
-    mime_type = getattr(block, "mimeType", None)
+    mime_type = getattr(block, "mime_type", None)
     normalized_mime = str(mime_type or "").split(";", 1)[0].strip().lower()
     if data is None or not normalized_mime.startswith("image/"):
         return ""
@@ -898,10 +902,10 @@ class SamplingHandler:
                     for block in content_blocks:
                         if hasattr(block, "text"):
                             parts.append({"type": "text", "text": block.text})
-                        elif hasattr(block, "data") and hasattr(block, "mimeType"):
+                        elif hasattr(block, "data") and hasattr(block, "mime_type"):
                             parts.append({
                                 "type": "image_url",
-                                "image_url": {"url": f"data:{block.mimeType};base64,{block.data}"},
+                                "image_url": {"url": f"data:{block.mime_type};base64,{block.data}"},
                             })
                         else:
                             logger.warning(
@@ -1074,7 +1078,7 @@ class SamplingHandler:
                         "name": getattr(t, "name", ""),
                         "description": getattr(t, "description", "") or "",
                         "parameters": _normalize_mcp_input_schema(
-                            getattr(t, "inputSchema", None)
+                            getattr(t, "input_schema", None)
                         ),
                     },
                 }
@@ -1209,7 +1213,7 @@ class MCPServerTask:
         Per the MCP spec, ``InitializeResult.capabilities.tools`` is non-None
         iff the server implements the ``tools/*`` request family. Prompt-only
         or resource-only servers omit it, and calling ``tools/list`` against
-        them raises ``McpError(-32601 Method not found)`` — which previously
+        them raises ``MCPError(-32601 Method not found)`` — which previously
         killed the connection during discovery and made every keepalive fail.
         (Ported from anomalyco/opencode#31271.)
 
@@ -1254,7 +1258,9 @@ class MCPServerTask:
                     logger.debug("MCP message handler (%s): exception: %s", self.name, message)
                     return
                 if _MCP_NOTIFICATION_TYPES and isinstance(message, ServerNotification):
-                    match message.root:
+                    # mcp v2 dropped the ``RootModel`` wrapper around the
+                    # message unions: ``message`` IS the concrete notification.
+                    match message:
                         case ToolListChangedNotification():
                             logger.info(
                                 "MCP server '%s': received tools/list_changed notification",
@@ -1297,7 +1303,7 @@ class MCPServerTask:
         if not self._advertises_tools():
             # A server that doesn't implement tools/* should never send
             # tools/list_changed, but guard anyway — calling tools/list
-            # would raise McpError(-32601).
+            # would raise MCPError(-32601).
             return
 
         async with self._refresh_lock:
@@ -1388,7 +1394,7 @@ class MCPServerTask:
                 # Timeout — no lifecycle event fired.  Send a keepalive
                 # to exercise the connection and detect stale sockets.
                 # Prompt-only / resource-only servers don't implement
-                # ``tools/list`` (McpError -32601), so use the universal
+                # ``tools/list`` (MCPError -32601), so use the universal
                 # ``ping`` request for them instead — otherwise every
                 # keepalive cycle would trigger a spurious reconnect.
                 if self.session:
@@ -1641,7 +1647,7 @@ class MCPServerTask:
         # Seed it as a client-level default, but treat user overrides as
         # case-insensitive so conventional casing is preserved.
         if not any(key.lower() == "mcp-protocol-version" for key in headers):
-            headers["mcp-protocol-version"] = LATEST_PROTOCOL_VERSION
+            headers["mcp-protocol-version"] = HANDSHAKE_PROTOCOL_VERSION
         connect_timeout = config.get("connect_timeout", _DEFAULT_CONNECT_TIMEOUT)
         ssl_verify = config.get("ssl_verify", True)
         client_cert = _resolve_client_cert(self.name, config)
@@ -1702,7 +1708,10 @@ class MCPServerTask:
                 # defaults (follow_redirects=True) and adds our TLS settings.
                 # The SDK calls the factory with (headers, auth, timeout); we
                 # forward all of those and layer verify/cert on top.
-                import httpx as _httpx_mod
+                # mcp v2 requires the factory to return an ``httpx2`` client:
+                # the SDK's transports and auth providers are httpx2 types, and
+                # handing back an ``httpx`` client degrades silently.
+                import httpx2 as _httpx_mod
 
                 _cert_for_factory = client_cert
                 _verify_for_factory = ssl_verify
@@ -1743,65 +1752,46 @@ class MCPServerTask:
                         )
             return
 
-        if _MCP_NEW_HTTP:
-            # New API (mcp >= 1.24.0): build an explicit httpx.AsyncClient
-            # matching the SDK's own create_mcp_http_client defaults.
-            import httpx
+        # mcp v2 replaced httpx with httpx2 across the transport stack. The
+        # client we hand to ``streamable_http_client`` must be an
+        # ``httpx2.AsyncClient``: an ``httpx`` one is accepted at construction
+        # but degrades silently (server-initiated messages stop arriving), and
+        # an OAuth provider (an ``httpx2.Auth`` subclass) is rejected outright
+        # by ``httpx.AsyncClient(auth=...)``.
+        import httpx2
 
-            _original_url = httpx.URL(url)
+        _original_url = httpx2.URL(url)
 
-            async def _strip_auth_on_cross_origin_redirect(response):
-                """Strip Authorization headers when redirected to a different origin."""
-                if response.is_redirect and response.next_request:
-                    target = response.next_request.url
-                    if (target.scheme, target.host, target.port) != (
-                        _original_url.scheme, _original_url.host, _original_url.port,
-                    ):
-                        response.next_request.headers.pop("authorization", None)
-                        response.next_request.headers.pop("Authorization", None)
-
-            client_kwargs: dict = {
-                "follow_redirects": True,
-                "timeout": httpx.Timeout(float(connect_timeout), read=300.0),
-                "verify": ssl_verify,
-                "event_hooks": {"response": [_strip_auth_on_cross_origin_redirect]},
-            }
-            if headers:
-                client_kwargs["headers"] = headers
-            if _oauth_auth is not None:
-                client_kwargs["auth"] = _oauth_auth
-            if client_cert is not None:
-                client_kwargs["cert"] = client_cert
-
-            # Caller owns the client lifecycle — the SDK skips cleanup when
-            # http_client is provided, so we wrap in async-with.
-            async with httpx.AsyncClient(**client_kwargs) as http_client:
-                async with streamable_http_client(url, http_client=http_client) as (
-                    read_stream, write_stream, _get_session_id,
+        async def _strip_auth_on_cross_origin_redirect(response):
+            """Strip Authorization headers when redirected to a different origin."""
+            if response.is_redirect and response.next_request:
+                target = response.next_request.url
+                if (target.scheme, target.host, target.port) != (
+                    _original_url.scheme, _original_url.host, _original_url.port,
                 ):
-                    async with ClientSession(read_stream, write_stream, **sampling_kwargs) as session:
-                        self.initialize_result = await session.initialize()
-                        self.session = session
-                        await self._discover_tools()
-                        self._ready.set()
-                        reason = await self._wait_for_lifecycle_event()
-                        if reason == "reconnect":
-                            logger.info(
-                                "MCP server '%s': reconnect requested — "
-                                "tearing down HTTP session", self.name,
-                            )
-        else:
-            # Deprecated API (mcp < 1.24.0): manages httpx client internally.
-            _http_kwargs: dict = {
-                "headers": headers,
-                "timeout": float(connect_timeout),
-                "verify": ssl_verify,
-            }
-            if _oauth_auth is not None:
-                _http_kwargs["auth"] = _oauth_auth
-            async with streamablehttp_client(url, **_http_kwargs) as (
-                read_stream, write_stream, _get_session_id,
-            ):
+                    response.next_request.headers.pop("authorization", None)
+                    response.next_request.headers.pop("Authorization", None)
+
+        client_kwargs: dict = {
+            "follow_redirects": True,
+            "timeout": httpx2.Timeout(float(connect_timeout), read=300.0),
+            "verify": ssl_verify,
+            "event_hooks": {"response": [_strip_auth_on_cross_origin_redirect]},
+        }
+        if headers:
+            client_kwargs["headers"] = headers
+        if _oauth_auth is not None:
+            client_kwargs["auth"] = _oauth_auth
+        if client_cert is not None:
+            client_kwargs["cert"] = client_cert
+
+        # Caller owns the client lifecycle — the SDK skips cleanup when
+        # http_client is provided, so we wrap in async-with.
+        async with httpx2.AsyncClient(**client_kwargs) as http_client:
+            async with streamable_http_client(url, http_client=http_client) as _streams:
+                # v2 yields (read, write); v1.24-1.28 yielded a third
+                # ``get_session_id`` callback we never used.
+                read_stream, write_stream = _streams[0], _streams[1]
                 async with ClientSession(read_stream, write_stream, **sampling_kwargs) as session:
                     self.initialize_result = await session.initialize()
                     self.session = session
@@ -1811,14 +1801,14 @@ class MCPServerTask:
                     if reason == "reconnect":
                         logger.info(
                             "MCP server '%s': reconnect requested — "
-                            "tearing down legacy HTTP session", self.name,
+                            "tearing down HTTP session", self.name,
                         )
 
     async def _discover_tools(self):
         """Discover tools from the connected session.
 
         Capability-gated: prompt-only / resource-only MCP servers don't
-        implement ``tools/list``, and calling it raises ``McpError(-32601)``,
+        implement ``tools/list``, and calling it raises ``MCPError(-32601)``,
         which previously aborted the connection — those servers could never
         stay connected for their prompts/resources. Skip the call when the
         server doesn't advertise the ``tools`` capability.
@@ -2143,8 +2133,19 @@ def _get_auth_error_types() -> tuple:
         optional import for forward/backward compatibility.
       - ``tools.mcp_oauth.OAuthNonInteractiveError`` — raised by our callback
         handler when no user is present to complete a browser flow.
-      - ``httpx.HTTPStatusError`` — caller must additionally check
-        ``status_code == 401`` via :func:`_is_auth_error`.
+      - ``httpx.HTTPStatusError`` / ``httpx2.HTTPStatusError`` — caller must
+        additionally check ``status_code == 401`` via :func:`_is_auth_error`.
+        Both libraries are listed because mcp v2 moved its own stack to
+        ``httpx2`` while Hermes' non-SDK HTTP paths still use ``httpx``; the
+        two exception hierarchies are unrelated at runtime.
+
+    Note on mcp v2: the streamable-HTTP transport no longer lets a non-2xx
+    response escape as an ``HTTPStatusError``. It answers the failing request
+    with a JSON-RPC error instead, so a bare-bearer-token 401 arrives as
+    ``MCPError(-32603)`` rather than a status error. OAuth-protected servers
+    are unaffected — the ``OAuthClientProvider`` still sees the 401 inside the
+    auth flow and raises ``OAuthFlowError`` / ``OAuthTokenError``, which is the
+    path Hermes' recovery actually keys on.
     """
     global _AUTH_ERROR_TYPES
     if _AUTH_ERROR_TYPES:
@@ -2166,31 +2167,41 @@ def _get_auth_error_types() -> tuple:
         types.append(OAuthNonInteractiveError)
     except ImportError:
         pass
-    try:
-        import httpx
-        types.append(httpx.HTTPStatusError)
-    except ImportError:
-        pass
+    for _mod_name in ("httpx", "httpx2"):
+        try:
+            _mod = importlib.import_module(_mod_name)
+        except ImportError:
+            continue
+        types.append(_mod.HTTPStatusError)
     _AUTH_ERROR_TYPES = tuple(types)
     return _AUTH_ERROR_TYPES
+
+
+def _http_status_error_types() -> tuple:
+    """Return whichever ``HTTPStatusError`` classes are importable."""
+    found: list = []
+    for _mod_name in ("httpx", "httpx2"):
+        try:
+            _mod = importlib.import_module(_mod_name)
+        except ImportError:
+            continue
+        found.append(_mod.HTTPStatusError)
+    return tuple(found)
 
 
 def _is_auth_error(exc: BaseException) -> bool:
     """Return True if ``exc`` indicates an MCP OAuth failure.
 
-    ``httpx.HTTPStatusError`` is only treated as auth-related when the
-    response status code is 401. Other HTTP errors fall through to the
-    generic error path in the tool handlers.
+    An ``HTTPStatusError`` (from either ``httpx`` or ``httpx2``) is only
+    treated as auth-related when the response status code is 401. Other HTTP
+    errors fall through to the generic error path in the tool handlers.
     """
     types = _get_auth_error_types()
     if not types or not isinstance(exc, types):
         return False
-    try:
-        import httpx
-        if isinstance(exc, httpx.HTTPStatusError):
-            return getattr(exc.response, "status_code", None) == 401
-    except ImportError:
-        pass
+    status_types = _http_status_error_types()
+    if status_types and isinstance(exc, status_types):
+        return getattr(exc.response, "status_code", None) == 401
     return True
 
 
@@ -2348,7 +2359,7 @@ def _is_session_expired_error(exc: BaseException) -> bool:
     distinct from :func:`_is_auth_error`: re-running the OAuth refresh
     flow would be pointless because the access token is fine.  What's
     needed is a transport reconnect — tear down and rebuild the
-    ``streamablehttp_client`` + ``ClientSession`` pair, which is
+    ``streamable_http_client`` + ``ClientSession`` pair, which is
     exactly what ``MCPServerTask._reconnect_event`` triggers.
     """
     if isinstance(exc, InterruptedError):
@@ -2375,7 +2386,7 @@ def _handle_session_expired_and_retry(
     the OAuth manager's ``handle_401`` — the access token is still
     valid, only the server-side session state is stale.  Setting
     ``_reconnect_event`` causes the server task's lifecycle loop to
-    tear down the current ``streamablehttp_client`` + ``ClientSession``
+    tear down the current ``streamable_http_client`` + ``ClientSession``
     and rebuild them, reusing the existing OAuth provider instance.
     See #13383.
 
@@ -2809,8 +2820,8 @@ def _make_tool_handler(server_name: str, tool_name: str, tool_timeout: float):
         async def _call():
             async with server._rpc_lock:
                 result = await server.session.call_tool(tool_name, arguments=args)
-            # MCP CallToolResult has .content (list of content blocks) and .isError
-            if result.isError:
+            # MCP CallToolResult has .content (list of content blocks) and .is_error
+            if result.is_error:
                 error_text = ""
                 for block in (result.content or []):
                     if hasattr(block, "text"):
@@ -2846,7 +2857,7 @@ def _make_tool_handler(server_name: str, tool_name: str, tool_timeout: float):
             # MCP spec: content is model-oriented (text), structuredContent
             # is machine-oriented (JSON metadata).  For an AI agent, content
             # is the primary payload; structuredContent supplements it.
-            structured = getattr(result, "structuredContent", None)
+            structured = getattr(result, "structured_content", None)
             if structured is not None:
                 if text_result:
                     return json.dumps({
@@ -2931,8 +2942,8 @@ def _make_list_resources_handler(server_name: str, tool_timeout: float):
                     entry["name"] = r.name
                 if hasattr(r, "description") and r.description:
                     entry["description"] = r.description
-                if hasattr(r, "mimeType") and r.mimeType:
-                    entry["mimeType"] = r.mimeType
+                if getattr(r, "mime_type", None):
+                    entry["mimeType"] = r.mime_type
                 resources.append(entry)
             return json.dumps({"resources": resources}, ensure_ascii=False)
 
@@ -3300,7 +3311,7 @@ def _convert_mcp_schema(server_name: str, mcp_tool) -> dict:
     Args:
         server_name: The logical server name for prefixing.
         mcp_tool:    An MCP ``Tool`` object with ``.name``, ``.description``,
-                     and ``.inputSchema``.
+                     and ``.input_schema``.
 
     Returns:
         A dict suitable for ``registry.register(schema=...)``.
@@ -3311,7 +3322,7 @@ def _convert_mcp_schema(server_name: str, mcp_tool) -> dict:
     return {
         "name": prefixed_name,
         "description": mcp_tool.description or f"MCP tool {mcp_tool.name} from {server_name}",
-        "parameters": _normalize_mcp_input_schema(getattr(mcp_tool, "inputSchema", None)),
+        "parameters": _normalize_mcp_input_schema(getattr(mcp_tool, "input_schema", None)),
     }
 
 

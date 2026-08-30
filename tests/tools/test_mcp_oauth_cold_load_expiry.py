@@ -382,7 +382,10 @@ async def test_initialize_prefetches_oauth_metadata_when_missing(
     """
     monkeypatch.setenv("HERMES_HOME", str(tmp_path))
 
-    import httpx
+    # mcp v2 replaced httpx with httpx2 across its transport and auth stack,
+    # so _prefetch_oauth_metadata builds an httpx2 client and the SDK's
+    # discovery helpers produce httpx2 Request/Response objects.
+    import httpx2
     from mcp.shared.auth import (
         OAuthClientInformationFull,
         OAuthClientMetadata,
@@ -419,10 +422,10 @@ async def test_initialize_prefetches_oauth_metadata_when_missing(
     # MockTransport that mimics BetterStack's split-origin discovery:
     #   PRM at mcp.example.com/.well-known/oauth-protected-resource -> points to auth.example.com
     #   ASM at auth.example.com/.well-known/oauth-authorization-server -> token_endpoint at auth.example.com/oauth/token
-    def mock_handler(request: httpx.Request) -> httpx.Response:
+    def mock_handler(request: httpx2.Request) -> httpx2.Response:
         url = str(request.url)
         if url.endswith("/.well-known/oauth-protected-resource"):
-            return httpx.Response(
+            return httpx2.Response(
                 200,
                 json={
                     "resource": "https://mcp.example.com",
@@ -432,7 +435,7 @@ async def test_initialize_prefetches_oauth_metadata_when_missing(
                 },
             )
         if url.endswith("/.well-known/oauth-authorization-server"):
-            return httpx.Response(
+            return httpx2.Response(
                 200,
                 json={
                     "issuer": "https://auth.example.com",
@@ -446,21 +449,21 @@ async def test_initialize_prefetches_oauth_metadata_when_missing(
                     "scopes_supported": ["read", "write"],
                 },
             )
-        return httpx.Response(404)
+        return httpx2.Response(404)
 
-    transport = httpx.MockTransport(mock_handler)
+    transport = httpx2.MockTransport(mock_handler)
 
     # Patch the AsyncClient constructor used by _prefetch_oauth_metadata so
     # it uses our mock transport instead of the real network.
-    import httpx as real_httpx
+    import httpx2 as real_httpx2
 
-    original_async_client = real_httpx.AsyncClient
+    original_async_client = real_httpx2.AsyncClient
 
     def patched_async_client(*args, **kwargs):
         kwargs["transport"] = transport
         return original_async_client(*args, **kwargs)
 
-    monkeypatch.setattr(real_httpx, "AsyncClient", patched_async_client)
+    monkeypatch.setattr(real_httpx2, "AsyncClient", patched_async_client)
 
     metadata = OAuthClientMetadata(
         redirect_uris=[AnyUrl("http://127.0.0.1:12345/callback")],
@@ -498,7 +501,7 @@ async def test_initialize_skips_prefetch_when_no_tokens(tmp_path, monkeypatch):
     discovery will run on the first real request anyway).
     """
     monkeypatch.setenv("HERMES_HOME", str(tmp_path))
-    import httpx
+    import httpx2
     from mcp.shared.auth import OAuthClientMetadata
     from pydantic import AnyUrl
 
@@ -510,20 +513,20 @@ async def test_initialize_skips_prefetch_when_no_tokens(tmp_path, monkeypatch):
 
     calls: list[str] = []
 
-    def mock_handler(request: httpx.Request) -> httpx.Response:
+    def mock_handler(request: httpx2.Request) -> httpx2.Response:
         calls.append(str(request.url))
-        return httpx.Response(404)
+        return httpx2.Response(404)
 
-    transport = httpx.MockTransport(mock_handler)
-    import httpx as real_httpx
+    transport = httpx2.MockTransport(mock_handler)
+    import httpx2 as real_httpx2
 
-    original = real_httpx.AsyncClient
+    original = real_httpx2.AsyncClient
 
     def patched(*args, **kwargs):
         kwargs["transport"] = transport
         return original(*args, **kwargs)
 
-    monkeypatch.setattr(real_httpx, "AsyncClient", patched)
+    monkeypatch.setattr(real_httpx2, "AsyncClient", patched)
 
     storage = HermesTokenStorage("srv")  # empty — no tokens on disk
     metadata = OAuthClientMetadata(
