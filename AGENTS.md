@@ -1,5 +1,7 @@
 # Hermes Agent - Development Guide
 
+**Asking the right questions is more instructive than finding the right answers.** Metrics, criteria, and cost functions are indicators, not truth — question and reframe them before optimizing to them. (Standing directive, 2026-09-01; canonical statement in the engineering-knowledge hub canon lessons.)
+
 Instructions for AI coding assistants and developers working on the hermes-agent codebase.
 
 **Never give up on the right solution.**
