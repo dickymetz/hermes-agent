@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-09-01T14:02:10Z",
+  "updated_at": "2026-09-01T18:02:59Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
-    "verification": "Official provider docs checked 2026-09-01; Google announces gemini-3.1-flash-lite shutdown on 2027-05-07 with gemini-3.5-flash-lite as replacement; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
+    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-01; Anthropic Fable 5.1 uses claude-fable-5-1; Google announces gemini-3.1-flash-lite shutdown on 2027-05-07 with gemini-3.5-flash-lite as replacement; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
   },
   "providers": {
     "openrouter": {
@@ -14,8 +14,8 @@
       },
       "models": [
         {
-          "id": "anthropic/claude-fable-5",
-          "description": "adaptive effort: low \u2192 max"
+          "id": "anthropic/claude-fable-5-1",
+          "description": "adaptive thinking; default effort: high"
         },
         {
           "id": "anthropic/claude-opus-5",
@@ -162,7 +162,7 @@
       },
       "models": [
         {
-          "id": "anthropic/claude-fable-5"
+          "id": "anthropic/claude-fable-5-1"
         },
         {
           "id": "anthropic/claude-opus-5"

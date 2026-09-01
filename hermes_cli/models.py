@@ -35,7 +35,7 @@ COPILOT_REASONING_EFFORTS_O_SERIES = ["low", "medium", "high"]
 # (model_id, display description shown in menus)
 OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
-    ("anthropic/claude-fable-5",               "adaptive effort: low → max"),
+    ("anthropic/claude-fable-5-1",             "adaptive thinking; default effort: high"),
     ("anthropic/claude-opus-5",                "thinking + effort: low → max"),
     ("anthropic/claude-sonnet-5",              "adaptive effort: low → max"),
     ("anthropic/claude-haiku-4.5",             ""),
@@ -152,7 +152,7 @@ def _xai_curated_models() -> list[str]:
 _PROVIDER_MODELS: dict[str, list[str]] = {
     "nous": [
         # Anthropic
-        "anthropic/claude-fable-5",
+        "anthropic/claude-fable-5-1",
         "anthropic/claude-opus-5",
         "anthropic/claude-sonnet-5",
         "anthropic/claude-haiku-4.5",
