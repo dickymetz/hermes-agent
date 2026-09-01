@@ -118,18 +118,6 @@
           "description": "open weights; free"
         },
         {
-          "id": "deepseek/deepseek-v4-pro",
-          "description": ""
-        },
-        {
-          "id": "deepseek/deepseek-v4-flash",
-          "description": ""
-        },
-        {
-          "id": "deepseek/deepseek-v4-flash-vision-exp",
-          "description": "experimental multimodal vision model"
-        },
-        {
           "id": "meta-llama/llama-4-maverick",
           "description": "open weights"
         },
@@ -202,12 +190,6 @@
         },
         {
           "id": "google/gemma-4-31b-it"
-        },
-        {
-          "id": "deepseek/deepseek-v4-pro"
-        },
-        {
-          "id": "deepseek/deepseek-v4-flash"
         },
         {
           "id": "meta-llama/llama-4-maverick"
