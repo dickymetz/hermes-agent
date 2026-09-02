@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-09-01T18:02:59Z",
+  "updated_at": "2026-09-02T14:00:00Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
-    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-01; Anthropic Fable 5.1 uses claude-fable-5-1; Google announces gemini-3.1-flash-lite shutdown on 2027-05-07 with gemini-3.5-flash-lite as replacement; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
+    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-02; DeepSeek V4 Pro is GA and V4 Flash is public beta; legacy deepseek-chat and deepseek-reasoner names were discontinued 2026-07-24; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
   },
   "providers": {
     "openrouter": {
@@ -68,6 +68,14 @@
         {
           "id": "openai/gpt-5.3-codex",
           "description": "coding-focused reasoning"
+        },
+        {
+          "id": "deepseek/deepseek-v4-pro",
+          "description": "thinking: low → max; GA"
+        },
+        {
+          "id": "deepseek/deepseek-v4-flash",
+          "description": "thinking: low → max; public beta"
         },
         {
           "id": "openai/gpt-oss-120b",
