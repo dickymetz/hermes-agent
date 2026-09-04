@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T14:00:19Z",
+  "updated_at": "2026-09-04T14:00:00Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
-    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-03; Google Gemini 3.8 Flash is stable; DeepSeek V4 Pro is GA and V4 Flash is public beta; legacy deepseek-chat and deepseek-reasoner names were discontinued 2026-07-24; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
+    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-04; Google Gemini 3.8 Flash is the new stable Flash model and Gemini 3.7 Flash is previous-generation stable; DeepSeek V4 Pro is GA and V4 Flash is public beta; legacy deepseek-chat and deepseek-reasoner names were discontinued 2026-07-24; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
   },
   "providers": {
     "openrouter": {
@@ -83,7 +83,7 @@
         },
         {
           "id": "google/gemini-3.7-flash",
-          "description": "latest stable Flash model"
+          "description": "previous-generation stable Flash model"
         },
         {
           "id": "google/gemini-3.6-flash",
