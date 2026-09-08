@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-09-04T14:00:00Z",
+  "updated_at": "2026-09-08T14:00:00Z",
   "metadata": {},
   "providers": {
     "openrouter": {
@@ -60,7 +60,7 @@ Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongsi
 
 DeepSeek's official change log documents GA `deepseek-v4-pro` and public-beta `deepseek-v4-flash`, with `low`, `high`, and `max` thinking effort. It also says the legacy `deepseek-chat` and `deepseek-reasoner` names were discontinued on 2026-07-24. OpenRouter exposes exact IDs for both current V4 models, so they are included in the OpenRouter manifest; they are not added to the Nous Portal block without Portal evidence.
 
-The 2026-09-04 current set includes Claude Fable 5.1, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), DeepSeek V4 Pro and V4 Flash, and Gemma 4 open-weight checkpoints. OpenAI also documents GPT-6 Astra (`gpt-6-astra`) in an enterprise Trusted Access rollout, but it is not added here because OpenRouter/Nous Portal availability is not established. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including the Qwen3.6 URL’s redirect to Qwen3.8, GLM 5.3, and Grok 4.6 entries whose primary release or provider evidence is absent, remain explicitly unverified in the shared catalog watchlist.
+The 2026-09-08 current set includes Claude Fable 5.1, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), DeepSeek V4 Pro and V4 Flash, and Gemma 4 open-weight checkpoints. Google’s current deprecations page lists Gemini 3.1 Flash-Lite as stable with no shutdown date announced. OpenAI also documents GPT-6 Astra (`gpt-6-astra`) in an enterprise Trusted Access rollout, but it is not added here because OpenRouter/Nous Portal availability is not established. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including the Qwen3.6 URL’s redirect to Qwen3.8, GLM 5.3, and Grok 4.6 entries whose primary release or provider evidence is absent, remain explicitly unverified in the shared catalog watchlist.
 
 The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. GPT-6 Astra is official but access-gated; keep it out of this OpenRouter/Nous Portal manifest until those surfaces are independently verified.
 
