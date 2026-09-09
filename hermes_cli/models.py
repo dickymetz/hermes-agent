@@ -31,7 +31,7 @@ COPILOT_REASONING_EFFORTS_O_SERIES = ["low", "medium", "high"]
 
 
 # Fallback OpenRouter snapshot used when the live catalog is unavailable.
-# Verified against https://openrouter.ai/api/v1/models on 2026-08-27.
+# Verified against https://openrouter.ai/api/v1/models on 2026-09-09.
 # (model_id, display description shown in menus)
 OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
