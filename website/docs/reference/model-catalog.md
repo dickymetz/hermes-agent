@@ -56,7 +56,7 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. This verification was refreshed on 2026-09-08. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07; retain the current ID until then and do not change runtime defaults from this catalog.
+Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. This verification was refreshed on 2026-09-09. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07; retain the current ID until then and do not change runtime defaults from this catalog.
 
 DeepSeek's official change log documents GA `deepseek-v4-pro` and public-beta `deepseek-v4-flash`, with `low`, `high`, and `max` thinking effort. It also says the legacy `deepseek-chat` and `deepseek-reasoner` names were discontinued on 2026-07-24. OpenRouter exposes exact IDs for both current V4 models, so they are included in the OpenRouter manifest; they are not added to the Nous Portal block without Portal evidence.
 

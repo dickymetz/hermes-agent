@@ -54,7 +54,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("openai/gpt-oss-20b",                     "Apache 2.0 open weights; reasoning"),
     # Google
     ("google/gemini-3.8-flash",                "latest stable Flash model"),
-    ("google/gemini-3.7-flash",                "latest stable Flash model"),
+    ("google/gemini-3.7-flash",                "previous-generation stable Flash model"),
     ("google/gemini-3.6-flash",                "thinking: minimal → high"),
     ("google/gemini-3.5-flash",                "thinking: minimal → high"),
     ("google/gemini-3.5-flash-lite",           "thinking: minimal → high"),
