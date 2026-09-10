@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-09-10T14:00:00Z",
+  "updated_at": "2026-09-10T17:02:58Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
@@ -205,9 +205,6 @@
         },
         {
           "id": "deepseek/deepseek-v4-pro"
-        },
-        {
-          "id": "deepseek/deepseek-v4-flash"
         },
         {
           "id": "meta-llama/llama-4-maverick"

@@ -66,9 +66,8 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("google/gemma-4-31b-it:free",             "open weights; free"),
     # xAI
     # DeepSeek
+    ("deepseek/deepseek-flash",               "V4.1 Flash; native multimodal API"),
     ("deepseek/deepseek-v4-pro",               ""),
-    ("deepseek/deepseek-v4-flash",             ""),
-    ("deepseek/deepseek-v4-flash-vision-exp",  "experimental multimodal vision model"),
     # Qwen
     # Other open-weight families
     ("meta-llama/llama-4-maverick",            "open weights"),
@@ -171,7 +170,6 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "google/gemma-4-31b-it",
         # DeepSeek
         "deepseek/deepseek-v4-pro",
-        "deepseek/deepseek-v4-flash",
         # Other open-weight families
         "meta-llama/llama-4-maverick",
         "meta-llama/llama-4-scout",

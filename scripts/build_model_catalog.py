@@ -48,10 +48,11 @@ def build_catalog() -> dict:
             "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
             "verification": (
                 "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs "
-                "checked 2026-09-09; Google Gemini 3.8 Flash is new stable and "
-                "Gemini 3.7 Flash is previous-generation stable; DeepSeek "
-                "V4 Pro is GA and V4 Flash is public beta; legacy deepseek-chat "
-                "and deepseek-reasoner names were discontinued 2026-07-24; "
+                "checked 2026-09-10; Google Gemini 3.8 Flash is new stable and "
+                "Gemini 3.7 Flash is previous-generation stable; DeepSeek V4.1 "
+                "Flash is current as deepseek-flash, V4 Flash and V4 Flash Vision "
+                "Exp are retired compatibility names, and V4 Pro has an announced "
+                "2026-09-14 routing change; "
                 "registry IDs retained only where exact availability was verified; "
                 "registry presence is not proof of provider support or licensing"
             ),
