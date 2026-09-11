@@ -23,7 +23,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
 ```json
 {
   "version": 1,
-  "updated_at": "2026-09-08T14:00:00Z",
+  "updated_at": "2026-09-11T18:01:34Z",
   "metadata": {},
   "providers": {
     "openrouter": {
@@ -32,12 +32,15 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
         {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
         {"id": "openai/gpt-5.4-nano", "description": "reasoning controls", "metadata": {}},
         {"id": "openai/gpt-5.3-codex", "description": "coding-focused reasoning", "metadata": {}},
-        {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"}
+        {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"},
+        {"id": "google/gemini-3.8-flash", "description": "latest stable Flash model"},
+        {"id": "deepseek/deepseek-flash", "description": "V4.1 Flash; native multimodal API"}
       ]
     },
     "nous": {
       "metadata": {},
       "models": [
+        {"id": "google/gemini-3.8-flash"},
         {"id": "google/gemini-3.6-flash"},
         {"id": "google/gemini-3.5-flash-lite"},
         {"id": "google/gemini-3.1-flash-lite"}
