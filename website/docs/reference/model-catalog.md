@@ -59,7 +59,7 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. This verification was refreshed on 2026-09-11. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07; retain the current ID until then and do not change runtime defaults from this catalog.
+Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. This verification was refreshed on 2026-09-14. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07, and confirms that `gemini-3.1-flash-lite-preview` shut down on 2026-05-25; retain the stable ID and do not change runtime defaults from this catalog.
 
 DeepSeek's official change log now documents current V4.1 Flash as `deepseek-flash`. It confirms V4 Flash and V4 Flash Vision Exp are retired compatibility names and says V4 Pro API service will continue after 2026-09-14 with billing unchanged. V4 Pro remains in the OpenRouter manifest; `deepseek-flash` is added there. The confirmed retired `deepseek-v4-flash` entry is removed from the Nous Portal active block; no other Nous Portal entry is changed without Portal evidence.
 
