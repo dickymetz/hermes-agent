@@ -23,7 +23,7 @@ https://hermes-agent.nousresearch.com/docs/api/model-catalog.json
 ```json
 {
   "version": 1,
-  "updated_at": "2026-08-31T14:00:00Z",
+  "updated_at": "2026-09-14T16:01:44Z",
   "metadata": {},
   "providers": {
     "openrouter": {
