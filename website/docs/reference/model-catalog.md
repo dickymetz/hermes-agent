@@ -33,8 +33,7 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
         {"id": "openai/gpt-5.4-nano", "description": "reasoning controls", "metadata": {}},
         {"id": "openai/gpt-5.3-codex", "description": "coding-focused reasoning", "metadata": {}},
         {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"},
-        {"id": "google/gemini-3.8-flash", "description": "latest stable Flash model"},
-        {"id": "deepseek/deepseek-flash", "description": "V4.1 Flash; native multimodal API"}
+        {"id": "google/gemini-3.8-flash", "description": "latest stable Flash model"}
       ]
     },
     "nous": {
@@ -59,9 +58,9 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. This verification was refreshed on 2026-09-14. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07, and confirms that `gemini-3.1-flash-lite-preview` shut down on 2026-05-25; retain the stable ID and do not change runtime defaults from this catalog.
+Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. This verification was refreshed on 2026-09-15. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07, and confirms that `gemini-3.1-flash-lite-preview` shut down on 2026-05-25; retain the stable ID and do not change runtime defaults from this catalog.
 
-DeepSeek's official change log now documents current V4.1 Flash as `deepseek-flash`. It confirms V4 Flash and V4 Flash Vision Exp are retired compatibility names and says V4 Pro API service will continue after 2026-09-14 with billing unchanged. V4 Pro remains in the OpenRouter manifest; `deepseek-flash` is added there. The confirmed retired `deepseek-v4-flash` entry is removed from the Nous Portal active block; no other Nous Portal entry is changed without Portal evidence.
+DeepSeek's official change log now documents current V4.1 Flash as `deepseek-flash`. It confirms V4 Flash and V4 Flash Vision Exp are retired compatibility names and says V4 Pro API service continues after 2026-09-14 with billing unchanged. The current OpenRouter registry exposes `deepseek/deepseek-v4-pro` but not `deepseek/deepseek-flash`, so only V4 Pro remains in the OpenRouter manifest; the official API ID remains documented in the shared catalog and is not presented as an OpenRouter ID. No Nous Portal entry is changed without Portal evidence.
 
 The 2026-09-11 current set includes Claude Fable 5.1, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), DeepSeek V4.1 Flash and V4 Pro, and Gemma 4 open-weight checkpoints. Google’s current deprecations page lists Gemini 3.1 Flash-Lite as stable, with a May 7, 2027 shutdown date and Gemini 3.5 Flash-Lite as the recommended replacement. OpenAI also documents GPT-6 Astra (`gpt-6-astra`) in an enterprise Trusted Access rollout, but it is not added here because OpenRouter/Nous Portal availability is not established. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including the Qwen3.6 URL’s redirect to Qwen3.8, GLM 5.3, and Grok 4.6 entries whose primary release or provider evidence is absent, remain explicitly unverified in the shared catalog watchlist.
 

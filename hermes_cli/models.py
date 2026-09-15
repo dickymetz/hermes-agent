@@ -66,7 +66,6 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("google/gemma-4-31b-it:free",             "open weights; free"),
     # xAI
     # DeepSeek
-    ("deepseek/deepseek-flash",               "V4.1 Flash; native multimodal API"),
     ("deepseek/deepseek-v4-pro",               ""),
     # Qwen
     # Other open-weight families

@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-09-14T16:02:07Z",
+  "updated_at": "2026-09-15T16:02:12Z",
   "metadata": {
     "source": "hermes-agent repo",
     "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
-    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-14; Google Gemini 3.8 Flash is new stable and Gemini 3.7 Flash is previous-generation stable; DeepSeek V4.1 Flash is current as deepseek-flash, V4 Flash and V4 Flash Vision Exp are retired compatibility names, and V4 Pro API service continues after 2026-09-14 with billing unchanged; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
+    "verification": "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs checked 2026-09-15; Google Gemini 3.8 Flash is new stable and Gemini 3.7 Flash is previous-generation stable; DeepSeek V4.1 Flash is current as deepseek-flash, V4 Flash and V4 Flash Vision Exp are retired compatibility names, and V4 Pro API service continues after 2026-09-14 with billing unchanged; the current OpenRouter registry exposes V4 Pro but not deepseek-flash; registry IDs retained only where exact availability was verified; registry presence is not proof of provider support or licensing"
   },
   "providers": {
     "openrouter": {
@@ -120,10 +120,6 @@
         {
           "id": "google/gemma-4-31b-it:free",
           "description": "open weights; free"
-        },
-        {
-          "id": "deepseek/deepseek-flash",
-          "description": "V4.1 Flash; native multimodal API"
         },
         {
           "id": "deepseek/deepseek-v4-pro",
