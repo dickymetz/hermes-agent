@@ -48,7 +48,7 @@ def build_catalog() -> dict:
             "docs": "https://hermes-agent.nousresearch.com/docs/reference/model-catalog",
             "verification": (
                 "Official Anthropic, OpenAI, Google, DeepSeek, and Mistral docs "
-                "checked 2026-09-16; Google Gemini 3.8 Flash is new stable and "
+                "checked 2026-09-23; Google Gemini 3.8 Flash is new stable and "
                 "Gemini 3.7 Flash is previous-generation stable; DeepSeek V4.1 "
                 "Flash is current as deepseek-flash, V4 Flash and V4 Flash Vision "
                 "Exp are retired compatibility names, and V4 Pro API service "
