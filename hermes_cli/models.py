@@ -31,7 +31,7 @@ COPILOT_REASONING_EFFORTS_O_SERIES = ["low", "medium", "high"]
 
 
 # Fallback OpenRouter snapshot used when the live catalog is unavailable.
-# Verified against https://openrouter.ai/api/v1/models on 2026-09-09.
+# Verified against https://openrouter.ai/api/v1/models on 2026-09-16.
 # (model_id, display description shown in menus)
 OPENROUTER_MODELS: list[tuple[str, str]] = [
     # Anthropic
@@ -40,6 +40,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("anthropic/claude-sonnet-5",              "adaptive effort: low → max"),
     ("anthropic/claude-haiku-4.5",             ""),
     # OpenAI
+    ("openai/gpt-6-astra",                     "reasoning: low → max; access-gated"),
     ("openai/gpt-5.6-sol",                     "reasoning: none → max"),
     ("openai/gpt-5.6-terra",                   "reasoning: none → max"),
     ("openai/gpt-5.6-luna",                    "reasoning: none → max"),
@@ -66,6 +67,7 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("google/gemma-4-31b-it:free",             "open weights; free"),
     # xAI
     # DeepSeek
+    ("deepseek/deepseek-v4.1-flash",           "reasoning: low → max"),
     ("deepseek/deepseek-v4-pro",               ""),
     # Qwen
     # Other open-weight families

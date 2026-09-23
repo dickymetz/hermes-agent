@@ -29,11 +29,13 @@ Published on every merge to `main` via the existing `deploy-site.yml` GitHub Pag
     "openrouter": {
       "metadata": {},
       "models": [
+        {"id": "openai/gpt-6-astra", "description": "reasoning: low → max; access-gated", "metadata": {}},
         {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
         {"id": "openai/gpt-5.4-nano", "description": "reasoning controls", "metadata": {}},
         {"id": "openai/gpt-5.3-codex", "description": "coding-focused reasoning", "metadata": {}},
         {"id": "anthropic/claude-opus-5", "description": "thinking + effort: low → max"},
-        {"id": "google/gemini-3.8-flash", "description": "latest stable Flash model"}
+        {"id": "google/gemini-3.8-flash", "description": "latest stable Flash model"},
+        {"id": "deepseek/deepseek-v4.1-flash", "description": "reasoning: low → max"}
       ]
     },
     "nous": {
@@ -58,13 +60,13 @@ Field notes:
 
 ## Current curation policy
 
-Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. Google also lists stable Live API IDs `gemini-3.8-live` and `gemini-3.8-live-extended-thinking`, released 2026-09-15, and recommends them over legacy `gemini-3.1-flash-live-preview`. This verification was refreshed on 2026-09-16. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07, and confirms that `gemini-3.1-flash-lite-preview` shut down on 2026-05-25; retain the stable ID and do not change runtime defaults from this catalog.
+Google's current stable Flash inventory now includes `gemini-3.8-flash`, alongside retained 3.7, 3.6, and 3.5 compatibility entries. Google identifies 3.8 as the new stable model and 3.7 as the previous-generation stable model. Google also lists stable Live API IDs `gemini-3.8-live` and `gemini-3.8-live-extended-thinking`, released 2026-09-15, and recommends them over legacy `gemini-3.1-flash-live-preview`. This verification was refreshed on 2026-09-23. Google lists `gemini-3.1-flash-lite` as stable, with a provider-announced shutdown on 2027-05-07, and confirms that `gemini-3.1-flash-lite-preview` shut down on 2026-05-25; retain the stable ID and do not change runtime defaults from this catalog.
 
 DeepSeek's official change log now documents current V4.1 Flash as `deepseek-flash`. It confirms V4 Flash and V4 Flash Vision Exp are retired compatibility names and says V4 Pro API service continues after 2026-09-14 with billing unchanged. The current OpenRouter registry exposes `deepseek/deepseek-v4-pro` but not `deepseek/deepseek-flash`, so only V4 Pro remains in the OpenRouter manifest; the official API ID remains documented in the shared catalog and is not presented as an OpenRouter ID. No Nous Portal entry is changed without Portal evidence.
 
-The 2026-09-15 current set includes Claude Fable 5.1, Opus 5, Sonnet 5, GPT-5.6 Sol/Terra/Luna, Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), DeepSeek V4.1 Flash and V4 Pro, and Gemma 4 open-weight checkpoints. Google’s current deprecations page lists Gemini 3.1 Flash-Lite as stable, with a May 7, 2027 shutdown date and Gemini 3.5 Flash-Lite as the recommended replacement. OpenAI also documents GPT-6 Astra (`gpt-6-astra`) in an enterprise Trusted Access rollout, but it is not added here because OpenRouter/Nous Portal availability is not established. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including the Qwen3.6 URL’s redirect to Qwen3.8, GLM 5.3, and Grok 4.6 entries whose primary release or provider evidence is absent, remain explicitly unverified in the shared catalog watchlist.
+The 2026-09-23 current set includes Claude Fable 5.1, Opus 5, Sonnet 5, GPT-6 Astra, GPT-5.6 Sol/Terra/Luna, Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.5 Flash and Flash-Lite, Gemini 3.1 Flash-Lite, Gemini 3.1 Pro (preview), DeepSeek V4.1 Flash and V4 Pro, and Gemma 4 open-weight checkpoints. Google’s current deprecations page lists Gemini 3.1 Flash-Lite as stable, with a May 7, 2027 shutdown date and Gemini 3.5 Flash-Lite as the recommended replacement. OpenAI documents GPT-6 Astra (`gpt-6-astra`) with low through max reasoning controls; its OpenRouter registry ID is retained as access-gated because provider access and registry availability are distinct claims. OpenRouter availability is checked against its model registry; a registry slug does not by itself establish a model's provider support, release status, or license. Registry-only candidates, including the Qwen3.6 URL’s redirect to Qwen3.8, GLM 5.3, and Grok 4.6 entries whose primary release or provider evidence is absent, remain explicitly unverified in the shared catalog watchlist.
 
-The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. GPT-6 Astra is official but access-gated; keep it out of this OpenRouter/Nous Portal manifest until those surfaces are independently verified.
+The catalog may remove a previous-generation entry after a provider confirms its successor or retirement. It must not change executable defaults, historical reports, receipts, or evaluation fixtures. GPT-6 Astra is official but access-gated; it is included in OpenRouter only because the exact registry ID was independently verified, and remains excluded from Nous Portal without Portal evidence.
 
 ## Fetch behavior
 
