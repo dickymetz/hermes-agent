@@ -23,14 +23,14 @@ https://hermes-agent.nousresearch.com/docs/api/model-catalog.json
 ```json
 {
   "version": 1,
-  "updated_at": "2026-09-14T16:01:44Z",
+  "updated_at": "2026-09-24T18:02:45Z",
   "metadata": {},
   "providers": {
     "openrouter": {
       "metadata": {},
       "models": [
-        {"id": "openai/gpt-5.6-sol", "description": "reasoning: none → max", "metadata": {}},
-        {"id": "openai/gpt-5.4",     "description": ""}
+        {"id": "openai/gpt-6-sol", "description": "reasoning: none → max", "metadata": {}},
+        {"id": "openai/gpt-5.4",  "description": ""}
       ]
     },
     "nous": {
