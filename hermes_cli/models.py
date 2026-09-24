@@ -41,9 +41,8 @@ OPENROUTER_MODELS: list[tuple[str, str]] = [
     ("anthropic/claude-haiku-4.5",             ""),
     # OpenAI
     ("openai/gpt-6-astra",                     "reasoning: low → max; access-gated"),
-    ("openai/gpt-5.6-sol",                     "reasoning: none → max"),
-    ("openai/gpt-5.6-terra",                   "reasoning: none → max"),
-    ("openai/gpt-5.6-luna",                    "reasoning: none → max"),
+    ("openai/gpt-6-sol",                       "reasoning: none → max"),
+    ("openai/gpt-6-luna",                      "reasoning: none → max"),
     ("openai/gpt-5.5",                         "reasoning controls"),
     ("openai/gpt-5.5-pro",                     "reasoning controls"),
     ("openai/gpt-5.4",                         "reasoning controls"),
@@ -158,9 +157,8 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "anthropic/claude-sonnet-5",
         "anthropic/claude-haiku-4.5",
         # OpenAI
-        "openai/gpt-5.6-sol",
-        "openai/gpt-5.6-terra",
-        "openai/gpt-5.6-luna",
+        "openai/gpt-6-sol",
+        "openai/gpt-6-luna",
         # Google
         "google/gemini-3.7-flash",
         "google/gemini-3.6-flash",
